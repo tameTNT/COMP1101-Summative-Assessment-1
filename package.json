@@ -1,0 +1,27 @@
+{
+  "name": "luca_huelle_prog_black_summative_1",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "nodemon server.js",
+    "pretest": "eslint ./ --fix",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Luca Huelle",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "jest": "^27.4.4",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
