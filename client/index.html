@@ -2,10 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hello World!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AoC Highlights</title>
+
+  <!-- Fonts & icons-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+        rel="stylesheet">
+
+  <!-- Code syntax highlighting -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"></script>
+  <script defer>hljs.highlightAll();</script>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+          crossorigin="anonymous" defer></script>
+
+  <!-- Own sources -->
+  <link rel="icon" type="image/x-icon" href="favicon.png">
   <script src="index.js" defer></script>
+  <link href="index.css" rel="stylesheet">
 </head>
-<body>
-  This is some body text.
+
+<body class="p-3">
+  <header>
+    <h1 class="text-center align-middle"><span class="material-icons md-36 align-text-bottom">terminal</span> AoC
+      Highlights</h1>
+  </header>
+
+  <main>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+      <div class="col">
+        <div class="card h-100">
+          <h5 class="card-header">Featured</h5>
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <pre><code class="language-python">value, loop_size = 1, 0
+while value != (card_public_key := 19774466):
+    value = value * 7 % 20201227</code></pre>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">See post
+            </button>
+          </div>
+          <div class="card-footer text-muted">
+            2 days ago
+          </div>
+        </div>
+      </div>
+      <div class="modal fade p-5" id="postModal" tabindex="-1" aria-labelledby="post1ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to
+              demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content
+              becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the
+              modal.
+              <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+              <pre><code class="language-perl">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
+
+my $value = my $loops = 1;
+$loops++ until ($value = step $value, 7) == (state $pub //= <>);
+say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            2 days ago
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            5 hours ago
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            1 day ago
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
 </body>
 </html>

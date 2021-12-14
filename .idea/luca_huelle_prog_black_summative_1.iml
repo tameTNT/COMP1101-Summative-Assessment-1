@@ -8,5 +8,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="highlight" level="application" />
+    <orderEntry type="library" name="github" level="application" />
+    <orderEntry type="library" name="github-dark" level="application" />
   </component>
 </module>
