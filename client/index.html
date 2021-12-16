@@ -88,12 +88,60 @@ while value != (card_public_key := 19774466):
           </div>
         </div>
       </div>
-      <div class="modal fade p-5" id="postModal" tabindex="-1" aria-labelledby="post1ModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            2 days ago
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            5 hours ago
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Python</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
+            <p class="card-text">Quick preview</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="card-footer text-muted">
+            1 day ago
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="postModals">
+      <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="post1ModalLabel"
+           aria-hidden="true">
+        <div
+            class="modal-dialog modal-fullscreen-md-down modal-dialog-scrollable modal-dialog-centered modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                      aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <pre class="mb-0"><code class="language-perl">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
@@ -141,49 +189,8 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
           </div>
         </div>
       </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            2 days ago
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            5 hours ago
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            1 day ago
-          </div>
-        </div>
-      </div>
     </div>
+
     <a href="#" class="float-button btn btn-success">
       <span class="material-icons md-36">post_add</span>
     </a>
