@@ -102,7 +102,7 @@ my $value = my $loops = 1;
 $loops++ until ($value = step $value, 7) == (state $pub //= <>);
 say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
               <a href="#" class="btn btn-outline-primary mt-3 mb-2">Reddit link</a>
-              <p>
+              <p class="mb-0">
                 This is some placeholder content to show the scrolling behavior for modals. We use
                 repeated line breaks to
                 demonstrate how content can exceed minimum inner height, thereby showing inner
@@ -111,7 +111,29 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                 scrollable within the
                 modal.
               </p>
-              <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+              <div class="d-flex justify-content-center align-items-center">
+                <span class="material-icons md-36 align-middle me-2">forum</span>
+                <h1><span class="align-middle">Comments</span></h1>
+              </div>
+              <div class="input-group mt-2 mb-2">
+                <span class="input-group-text">Comment:</span>
+                <textarea class="form-control" aria-label="With textarea"></textarea>
+                <button class="btn btn-outline-secondary" type="button">Post</button>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      A comment shortened to one lin...
+                    </div>
+                    <div class="text-muted">
+                      1 day ago
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item">Another comment which is much ...</li>
+                <li class="list-group-item">Short comment</li>
+              </ul>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
