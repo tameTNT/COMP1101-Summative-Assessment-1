@@ -86,16 +86,22 @@ while value != (card_public_key := 19774466):
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to
-              demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content
-              becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the
-              modal.
-              <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-              <pre><code class="language-perl">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
+              <pre class="mb-0"><code class="language-perl">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
 
 my $value = my $loops = 1;
 $loops++ until ($value = step $value, 7) == (state $pub //= <>);
 say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
+              <a href="#" class="btn btn-outline-primary mt-3 mb-2">Reddit link</a>
+              <p>
+                This is some placeholder content to show the scrolling behavior for modals. We use
+                repeated line breaks to
+                demonstrate how content can exceed minimum inner height, thereby showing inner
+                scrolling. When content
+                becomes longer than the predefined max-height of modal, content will be cropped and
+                scrollable within the
+                modal.
+              </p>
+              <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
