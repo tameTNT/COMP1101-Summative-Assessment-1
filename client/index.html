@@ -50,7 +50,7 @@
         Sort by:
       </div>
       <div class="ms-2">
-        <select class="form-select" aria-label=".form-select sort-by">
+        <select class="form-select" aria-label=".form-select sort-by" id="sortingOption">
           <option selected value="time">Recency</option>
           <option value="like">Likes</option>
         </select>
@@ -59,7 +59,7 @@
   </header>
 
   <main>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="cards">
       <div class="col">
         <div class="card h-100">
           <h5 class="card-header">Featured</h5>
@@ -75,7 +75,7 @@ while value != (card_public_key := 19774466):
           </div>
           <div class="card-footer text-muted">
             <div class="d-flex justify-content-between">
-              <div class="text-danger">
+              <div class="text-danger" id="card1Likes">
                 <a href="#" class="text-danger" style="letter-spacing: -3px;"><3</a> 15
               </div>
               <div>
