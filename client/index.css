@@ -15,8 +15,10 @@
   font-size: 48px;
 }
 
-code {
+.code-text {
   font-family: 'Roboto Mono', monospace;
+  height: 150px;
+  overflow-y: scroll;
 }
 
 .float-button {

@@ -14,11 +14,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
         rel="stylesheet">
 
-  <!-- Code syntax highlighting -->
+  <!-- Code syntax highlighting with highlight.js -->
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/github-dark.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"></script>
-  <script defer>hljs.highlightAll();</script>
+  <script
+      src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"></script>
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -29,7 +29,7 @@
           integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
           crossorigin="anonymous" defer></script>
 
-  <!-- Own sources -->
+  <!-- Own sources inc. favicon, JS and CSS -->
   <link rel="icon" type="image/x-icon" href="favicon.png">
   <script src="index.js" defer></script>
   <link href="index.css" rel="stylesheet">
@@ -66,7 +66,7 @@
           <div class="card-body">
             <h5 class="card-title">Python</h5>
             <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <pre><code class="language-python">value, loop_size = 1, 0
+            <pre><code class="language-python code-text">value, loop_size = 1, 0
 while value != (card_public_key := 19774466):
     value = value * 7 % 20201227</code></pre>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -144,7 +144,7 @@ while value != (card_public_key := 19774466):
                       aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <pre class="mb-0"><code class="language-perl">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
+              <pre class="mb-0"><code class="language-perl code-text">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
 
 my $value = my $loops = 1;
 $loops++ until ($value = step $value, 7) == (state $pub //= <>);
@@ -183,17 +183,76 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                 <li class="list-group-item">Short comment</li>
               </ul>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+            <!--            <div class="modal-footer">-->
+            <!--              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+            <!--            </div>-->
           </div>
         </div>
       </div>
     </div>
 
-    <a href="#" class="float-button btn btn-success">
+    <a href="#" class="float-button btn btn-success" data-bs-toggle="modal"
+       data-bs-target="#newPostModal">
       <span class="material-icons md-36">post_add</span>
     </a>
+
+    <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel"
+         aria-hidden="true">
+      <div
+          class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Post</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-floating m-3">
+                <input class="form-control" id="postTitleInput" placeholder="A Wacky Post Title">
+                <label for="postTitleInput">Post Title</label>
+              </div>
+
+              <select class="form-select m-3 w-75" aria-label="Select Language">
+                <option selected>Select Language</option>
+                <option value="python">Python</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+
+              <div class="form-floating m-3">
+                <textarea class="form-control code-text" placeholder="print('Hello World')"
+                          id="postCodeInput" style="height: 100px">print('Hello World')</textarea>
+                <label for="postCodeInput">Code</label>
+              </div>
+
+              <a class="btn btn-secondary ms-3 me-3" data-bs-toggle="collapse"
+                 href="#collapseCodePreview"
+                 role="button" aria-expanded="false" aria-controls="collapseCodePreview">
+                Show/hide code preview
+              </a>
+              <div class="collapse m-3" id="collapseCodePreview">
+                <div class="card card-body">
+                  <div id="codeInputPreview" class="code-text language-python"
+                       style="white-space: pre-wrap;"></div>
+                </div>
+              </div>
+
+              <div class="form-floating m-3">
+                <!-- Add ' is-invalid' to class when validating -->
+                <input type="url" class="form-control" id="postRedditLink"
+                       placeholder="/comments/kjtg7y/comment/gnxor36/"
+                       value="/comments/kjtg7y/comment/gnxor36/">
+                <label for="postRedditLink">Reddit Link</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Post!</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
 </body>
