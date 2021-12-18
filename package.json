@@ -1,12 +1,15 @@
 {
   "name": "luca_huelle_prog_black_summative_1",
-  "version": "0.1.1",
-  "description": "",
+  "version": "0.1.2",
+  "description": "Programming (Black) Summative Assessment Project - a dynamic single-page app using Bootstrap and JS",
   "main": "index.js",
   "scripts": {
     "run": "nodemon server.js",
     "pretest": "eslint ./ --fix",
     "test": "jest"
+  },
+  "repository": {
+    "url": "https://github.com/tameTNT/COMP1101-Summative-Assessment-1"
   },
   "keywords": [],
   "author": "Luca Huelle",

@@ -6,6 +6,9 @@ module.exports = {
     node: true,
     jest: true
   },
+  globals: {
+    hljs: true
+  },
   extends: [
     'standard'
   ],
