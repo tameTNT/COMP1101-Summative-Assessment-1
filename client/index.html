@@ -207,7 +207,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                     aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="newPostForm">
               <div class="form-floating m-3">
                 <input class="form-control" id="postTitleInput" placeholder="A Wacky Post Title">
                 <label for="postTitleInput">Post Title</label>
@@ -222,7 +222,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
 
               <div class="form-floating m-3">
                 <textarea class="form-control code-text" placeholder="print('Hello World')"
-                          id="postCodeInput" style="height: 100px">print('Hello World')</textarea>
+                          spellcheck="false" id="postCodeInput" style="height: 100px">print('Hello World')</textarea>
                 <label for="postCodeInput">Code</label>
               </div>
 
@@ -239,8 +239,11 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
               </div>
 
               <div class="form-floating m-3">
-                <!-- Add ' is-invalid' to class when validating -->
-                <input type="url" class="form-control" id="postRedditLink"
+                <!-- Add ' is-invalid' to class when validating reddit link via api -->
+                <input type="text"
+                       pattern="((https://www.reddit.com/r/adventofcode/|)comments/|)(\w*)/comment/(\w*)(/)?"
+                       title="A url to a solution comment on an Advent of Code day megathread. e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/"
+                       class="form-control" id="postRedditLink"
                        placeholder="/comments/kjtg7y/comment/gnxor36/"
                        value="/comments/kjtg7y/comment/gnxor36/">
                 <label for="postRedditLink">Reddit Link</label>
@@ -248,7 +251,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Post!</button>
+            <button type="submit" class="btn btn-primary" form="newPostForm">Post!</button>
           </div>
         </div>
       </div>
