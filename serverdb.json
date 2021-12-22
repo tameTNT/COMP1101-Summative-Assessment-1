@@ -6,7 +6,7 @@
       "code": "value, loop_size = 1, 0\\nwhile value != (card_public_key := 19774466):\\n    value = value * 7 % 20201227\\n    loop_size += 1\\n\\nprint('Part One:', pow(door_public_key := 7290641, loop_size, 20201227))\\nprint('Part Two: --- Advent of Code 2020 --- The End ---\\n', 50 * '*')",
       "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/gnxor36/",
       "language": "python",
-      "postTime": "2021-12-13T22:16:28.278Z",
+      "time": "2021-12-13T22:16:28.278Z",
       "likes": 10
     },
     {
@@ -15,7 +15,7 @@
       "code": "let value = 1;\\nlet loop = 0;\\ndo {\\n    value *= subject_number;\\n    value %= divisor;\\n    loop += 1;\\n} while (value !== public_key);",
       "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/ghvi9ro/",
       "language": "javascript",
-      "postTime": "2021-12-13T22:19:30.278Z",
+      "time": "2021-12-13T22:19:30.278Z",
       "likes": 5
     },
     {
@@ -24,9 +24,28 @@
       "code": "sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }\\n\\nmy $value = my $loops = 1;\\n$loops++ until ($value = step $value, 7) == (state $pub //= <>);\\nsay reduce { step $a, state $pub //= <> } 1, 1 .. $loops;",
       "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/gh5vffy/",
       "language": "perl",
-      "postTime": "2021-12-11T10:15:28.278Z",
+      "time": "2021-12-11T10:15:28.278Z",
       "likes": 20
     }
   ],
-  "comments": []
+  "comments": [
+    {
+      "id": 0,
+      "parent": 0,
+      "content": "Wow that's some cool code!",
+      "time": "2021-12-11T10:15:28.278Z"
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "content": "Big spam here.",
+      "time": "2021-12-15T10:15:28.278Z"
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "content": "Wow! Much cool",
+      "time": "2021-12-20T10:15:28.278Z"
+    }
+  ]
 }
