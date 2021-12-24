@@ -1,10 +1,12 @@
 // const { DateTime } = require('luxon');
 
+const fs = require('fs');
 const express = require('express');
 const app = express();
 const helpers = require('./helperFunctions.js');
 
 app.use(express.static('client'));
+app.use(express.json());
 
 app.route('/cards(/:id(\\d+))?')
   .get((req, res) => {
@@ -14,7 +16,20 @@ app.route('/cards(/:id(\\d+))?')
     res.send(helpers.handleIdUrl(cards, reqParamId, reqQueryIds));
   })
   .post((req, res) => {
-    res.send('Card post');
+    fs.readFile('./serverdb.json', 'utf8', (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const jsonData = JSON.parse(data);
+        const newCard = req.body;
+        jsonData.cards.push(newCard);
+        const jsonString = JSON.stringify(jsonData, null, 2);
+        fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
+          res.status(201);
+          res.send();
+        });
+      }
+    });
   });
 
 app.route('/comments(/:id(\\d+))?')
