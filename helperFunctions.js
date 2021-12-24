@@ -7,7 +7,7 @@ module.exports.isEmpty = function (obj) {
     Object.getPrototypeOf(obj) === Object.prototype;
 };
 
-module.exports.search = function (list, ids) {
+const search = function (list, ids) {
   const results = [];
   for (const item of list) {
     if (ids.includes(item.id)) {
@@ -15,4 +15,17 @@ module.exports.search = function (list, ids) {
     }
   }
   return results;
+};
+
+module.exports.handleIdUrl = function (toSearch, paramId, queryIds) {
+  if (paramId !== undefined) {
+    paramId = Number(paramId);
+    return search(toSearch, [paramId]);
+  } else if (queryIds) {
+    const commaSplitRegex = /, */;
+    queryIds = queryIds.split(commaSplitRegex).map((s) => Number(s));
+    return search(toSearch, queryIds);
+  } else {
+    return toSearch;
+  }
 };

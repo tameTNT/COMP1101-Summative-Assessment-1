@@ -6,10 +6,12 @@ const helpers = require('./helperFunctions.js');
 
 app.use(express.static('client'));
 
-app.route('/card')
+app.route('/cards(/:id(\\d+))?')
   .get((req, res) => {
-    console.log('Card');
-    res.send('Card');
+    const reqParamId = req.params.id;
+    const reqQueryIds = req.query.ids;
+    const cards = require('./serverdb.json').cards;
+    res.send(helpers.handleIdUrl(cards, reqParamId, reqQueryIds));
   })
   .post((req, res) => {
     res.send('Card post');
@@ -17,22 +19,13 @@ app.route('/card')
 
 app.route('/comments(/:id(\\d+))?')
   .get((req, res) => {
-    let reqParamId = req.params.id;
-    let reqQueryIds = req.query.ids;
+    const reqParamId = req.params.id;
+    const reqQueryIds = req.query.ids;
     const comments = require('./serverdb.json').comments;
-    if (reqParamId !== undefined) {
-      reqParamId = Number(reqParamId);
-      res.send(helpers.search(comments, [reqParamId]));
-    } else if (reqQueryIds) {
-      const commaSplitRegex = /, */;
-      reqQueryIds = reqQueryIds.split(commaSplitRegex).map((s) => Number(s));
-      res.send(helpers.search(comments, reqQueryIds));
-    } else {
-      res.send(comments);
-    }
+    res.send(helpers.handleIdUrl(comments, reqParamId, reqQueryIds));
   })
   .post((req, res) => {
-    res.send('Comment post');
+    res.send('Comment POST');
   });
 
 // console.log(JSON.stringify(DateTime.now().toUTC()));
