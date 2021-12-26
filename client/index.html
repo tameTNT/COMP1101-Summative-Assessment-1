@@ -202,26 +202,32 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
           <div class="modal-header">
             <h5 class="modal-title">New Post</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                    aria-label="Close" id="newCardFormModalCloseButton"></button>
           </div>
           <div class="modal-body">
             <form id="newCardForm">
               <div class="form-floating m-3">
-                <input class="form-control" id="postTitleInput" placeholder="A Wacky Post Title">
-                <label for="postTitleInput">Post Title</label>
+                <input class="form-control" id="newCardTitleInput" name="title"
+                       placeholder="A Wacky Post Title"
+                       required>
+                <label for="newCardTitleInput">Post Title</label>
               </div>
 
-              <select class="form-select m-3 w-75" aria-label="Select Language">
-                <option selected>Select Language</option>
+              <select class="form-select m-3 w-75" aria-label="Select Language" name="language"
+                      required>
+                <option value="" selected disabled>Select Language</option>
                 <option value="python">Python</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
               </select>
 
-              <div class="form-floating m-3">
-                <textarea class="form-control code-text" placeholder="print('Hello World')"
-                          spellcheck="false" id="postCodeInput" style="height: 100px">print('Hello World')</textarea>
-                <label for="postCodeInput">Code</label>
+              <div class="form-floating m-3 flex-nowrap">
+                <textarea class="form-control code-text"
+                          name="code"
+                          spellcheck="false" id="newCardCodeInput"
+                          style="height: 100px; white-space: pre"
+                          required>print('Hello World')</textarea>
+                <label for="newCardCodeInput">Code</label>
               </div>
 
               <a class="btn btn-secondary ms-3 me-3" data-bs-toggle="collapse"
@@ -242,10 +248,10 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                 <input type="text"
                        pattern="((https://www.reddit.com/r/adventofcode/|)comments/|)(\w*)/comment/(\w*)(/)?"
                        title="A url to a solution comment on an Advent of Code day megathread. e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/"
-                       class="form-control" id="postRedditLink"
+                       class="form-control" id="newCardRedditLink" name="reddit"
                        placeholder="/comments/kjtg7y/comment/gnxor36/"
-                       value="/comments/kjtg7y/comment/gnxor36/">
-                <label for="postRedditLink">Reddit Link</label>
+                       value="comments/kjtg7y/comment/gnxor36/" required>
+                <label for="newCardRedditLink">Reddit Link</label>
               </div>
             </form>
           </div>
