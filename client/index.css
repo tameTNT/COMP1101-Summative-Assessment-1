@@ -17,7 +17,7 @@
 
 .code-text {
   font-family: 'Roboto Mono', monospace;
-  height: 150px;
+  max-height: 150px;
   overflow-y: scroll;
 }
 

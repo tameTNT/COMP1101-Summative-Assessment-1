@@ -179,24 +179,22 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                     </div>
                   </div>
                 </li>
+                <!-- todo: shorten comments via JS adapting to device width -->
                 <li class="list-group-item">Another comment which is much ...</li>
                 <li class="list-group-item">Short comment</li>
               </ul>
             </div>
-            <!--            <div class="modal-footer">-->
-            <!--              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
-            <!--            </div>-->
           </div>
         </div>
       </div>
     </div>
 
     <a href="#" class="float-button btn btn-success" data-bs-toggle="modal"
-       data-bs-target="#newPostModal">
+       data-bs-target="#newCardModal">
       <span class="material-icons md-36">post_add</span>
     </a>
 
-    <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel"
+    <div class="modal fade" id="newCardModal" tabindex="-1" aria-labelledby="newCardModalLabel"
          aria-hidden="true">
       <div
           class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
@@ -207,7 +205,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                     aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="newPostForm">
+            <form id="newCardForm">
               <div class="form-floating m-3">
                 <input class="form-control" id="postTitleInput" placeholder="A Wacky Post Title">
                 <label for="postTitleInput">Post Title</label>
@@ -234,12 +232,13 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
               <div class="collapse m-3" id="collapseCodePreview">
                 <div class="card card-body">
                   <div id="codeInputPreview" class="code-text language-python p-2"
-                       style="white-space: pre-wrap;"></div>
+                       style="white-space: pre"></div>
                 </div>
               </div>
 
               <div class="form-floating m-3">
-                <!-- Add ' is-invalid' to class when validating reddit link via api -->
+                <!-- todo: add validation stuff (https://getbootstrap.com/docs/5.0/forms/validation/)
+                including ' is-invalid' to class when validating reddit link via api -->
                 <input type="text"
                        pattern="((https://www.reddit.com/r/adventofcode/|)comments/|)(\w*)/comment/(\w*)(/)?"
                        title="A url to a solution comment on an Advent of Code day megathread. e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/"
@@ -251,7 +250,9 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" form="newPostForm">Post!</button>
+            <button type="submit" class="btn btn-primary" form="newCardForm">
+              Post!
+            </button>
           </div>
         </div>
       </div>

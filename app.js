@@ -1,8 +1,10 @@
-// const { DateTime } = require('luxon');
+// todo: comment this stuff and all html etc.
+// noinspection JSUnresolvedVariable
 
 const fs = require('fs');
 const express = require('express');
 const app = express();
+
 const helpers = require('./helperFunctions.js');
 
 app.use(express.static('client'));
