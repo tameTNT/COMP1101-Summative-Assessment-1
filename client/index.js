@@ -103,3 +103,7 @@ async function formSubmitListener (event) {
 }
 
 document.getElementById('newCardForm').addEventListener('submit', formSubmitListener);
+
+// todo: when updating page dynamically, use template literals with tag functions e.g.
+//   function foo (header) { return `<h1>${'header'}</h1>`}
+//   see StackOverflow "Can ES6 template literals be substituted at runtime?"
