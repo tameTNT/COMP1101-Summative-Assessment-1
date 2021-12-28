@@ -10,6 +10,11 @@ module.exports.isEmpty = function (obj) {
     Object.getPrototypeOf(obj) === Object.prototype;
 };
 
+/**
+ * @param {Object[]} list
+ * @param {Number[]} ids
+ * @return {Object[]}
+ */
 const search = function (list, ids) {
   const results = [];
   for (const item of list) {
@@ -20,14 +25,20 @@ const search = function (list, ids) {
   return results;
 };
 
+/**
+ * @param {Object[]} toSearch
+ * @param {String} paramId
+ * @param {String} queryIds
+ * @return {Object[]}
+ */
 module.exports.handleIdUrl = function (toSearch, paramId, queryIds) {
   if (paramId !== undefined) {
-    paramId = Number(paramId);
-    return search(toSearch, [paramId]);
+    const paramIdNum = Number(paramId);
+    return search(toSearch, [paramIdNum]);
   } else if (queryIds) {
-    const commaSplitRegex = /, */;
-    queryIds = queryIds.split(commaSplitRegex).map((s) => Number(s));
-    return search(toSearch, queryIds);
+    const commaSplitRegexp = /, */;
+    const queryIdsArray = queryIds.split(commaSplitRegexp).map((s) => Number(s));
+    return search(toSearch, queryIdsArray);
   } else {
     return toSearch;
   }
