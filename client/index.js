@@ -17,10 +17,24 @@ codeInputArea.addEventListener('input', (e) => {
   hljs.highlightElement(codePreviewArea);
 });
 
+function resetFormCodePreview () {
+  codePreviewArea.innerHTML = "print('Hello World')";
+  hljs.highlightElement(codePreviewArea);
+}
+
 // initial highlighting on DOM load
 highlightAllCode();
-codePreviewArea.innerHTML = "print('Hello World')";
-hljs.highlightElement(codePreviewArea);
+resetFormCodePreview();
+
+const langSelect = document.getElementById('languageSelect');
+hljs.listLanguages().forEach((langName) => {
+  const opt = document.createElement('option');
+  const capLangName = langName.charAt(0).toUpperCase() + langName.slice(1);
+  opt.value = langName;
+  opt.innerHTML = capLangName;
+
+  langSelect.appendChild(opt);
+});
 
 // todo: change highlighting class on form selection change
 
