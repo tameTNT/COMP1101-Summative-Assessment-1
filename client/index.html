@@ -66,7 +66,7 @@
           <div class="card-body">
             <h5 class="card-title">Python</h5>
             <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <pre><code class="language-python code-text">value, loop_size = 1, 0
+            <pre><code class="language-python code-text" tabindex="0">value, loop_size = 1, 0
 while value != (card_public_key := 19774466):
     value = value * 7 % 20201227</code></pre>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -144,7 +144,7 @@ while value != (card_public_key := 19774466):
                       aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <pre class="mb-0"><code class="language-perl code-text">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
+              <pre class="mb-0"><code class="language-perl code-text" tabindex="0">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
 
 my $value = my $loops = 1;
 $loops++ until ($value = step $value, 7) == (state $pub //= <>);
@@ -201,29 +201,27 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">New Post</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
+            <button type="button" class="btn-close" data-bs-dismiss="modal" tabindex="0"
                     aria-label="Close" id="newCardFormModalCloseButton"></button>
           </div>
           <div class="modal-body">
             <form id="newCardForm">
               <div class="form-floating m-3">
                 <input class="form-control" id="newCardTitleInput" name="title"
-                       placeholder="A Wacky Post Title"
+                       placeholder="A Wacky Post Title" tabindex="0"
                        required>
                 <label for="newCardTitleInput">Post Title</label>
               </div>
 
               <select class="form-select m-3 w-75" aria-label="Select Language" name="language"
+                      id="languageSelect" tabindex="0"
                       required>
                 <option value="" selected disabled>Select Language</option>
-                <option value="python">Python</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
               </select>
 
               <div class="form-floating m-3 flex-nowrap">
                 <textarea class="form-control code-text"
-                          name="code"
+                          name="code" tabindex="0"
                           spellcheck="false" id="newCardCodeInput"
                           style="height: 100px; white-space: pre"
                           required>print('Hello World')</textarea>
@@ -231,14 +229,14 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
               </div>
 
               <a class="btn btn-secondary ms-3 me-3" data-bs-toggle="collapse"
-                 href="#collapseCodePreview"
+                 href="#collapseCodePreview" tabindex="0"
                  role="button" aria-expanded="false" aria-controls="collapseCodePreview">
                 Show/hide code preview
               </a>
               <div class="collapse m-3" id="collapseCodePreview">
                 <div class="card card-body">
                   <div id="codeInputPreview" class="code-text language-python p-2"
-                       style="white-space: pre"></div>
+                       style="white-space: pre" tabindex="0"></div>
                 </div>
               </div>
 
@@ -247,7 +245,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                 including ' is-invalid' to class when validating reddit link via api -->
                 <input type="text"
                        pattern="https://www.reddit.com/r/adventofcode/comments/(\w*)/comment/(\w*)(/(\?.*)?)?"
-                       class="form-control" id="newCardRedditUrl" name="redditUrl" tabindex="1"
+                       class="form-control" id="newCardRedditUrl" name="redditUrl" tabindex="0"
                        required>
                 <label for="newCardRedditUrl">Reddit URL</label>
               </div>
@@ -255,7 +253,7 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" form="newCardForm" id="newCardSubmit"
-                    tabindex="1">
+                    tabindex="0">
               Post!
             </button>
           </div>
