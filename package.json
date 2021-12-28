@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "express": "^4.17.2",
-    "luxon": "^2.2.0"
+    "luxon": "^2.2.0",
+    "node-fetch": "^2.0.0"
   }
 }

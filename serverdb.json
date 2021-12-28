@@ -1,31 +1,18 @@
 {
   "cards": [
     {
-      "id": 0,
-      "title": "Cool Python Solution",
-      "code": "value, loop_size = 1, 0\\nwhile value != (card_public_key := 19774466):\\n    value = value * 7 % 20201227\\n    loop_size += 1\\n\\nprint('Part One:', pow(door_public_key := 7290641, loop_size, 20201227))\\nprint('Part Two: --- Advent of Code 2020 --- The End ---\\n', 50 * '*')",
-      "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/gnxor36/",
+      "title": "Woah pathfinding!",
       "language": "python",
-      "time": "2021-12-13T22:16:28.278Z",
-      "likes": 10
-    },
-    {
-      "id": 1,
-      "title": "Epic JS Solution",
-      "code": "let value = 1;\\nlet loop = 0;\\ndo {\\n    value *= subject_number;\\n    value %= divisor;\\n    loop += 1;\\n} while (value !== public_key);",
-      "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/ghvi9ro/",
-      "language": "javascript",
-      "time": "2021-12-13T22:19:30.278Z",
-      "likes": 5
-    },
-    {
-      "id": 2,
-      "title": "Working Perl Solution",
-      "code": "sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }\\n\\nmy $value = my $loops = 1;\\n$loops++ until ($value = step $value, 7) == (state $pub //= <>);\\nsay reduce { step $a, state $pub //= <> } 1, 1 .. $loops;",
-      "reddit": "https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/gh5vffy/",
-      "language": "perl",
-      "time": "2021-12-11T10:15:28.278Z",
-      "likes": 20
+      "code": "from __future__ import annotations\r\nfrom collections import namedtuple\r\nfrom heapq import heappop, heappush\r\nfrom time import perf_counter\r\nimport numpy as np\r\n\r\nNode = namedtuple(\"Node\", \"x y\")\r\nPath = namedtuple(\"Path\", \"risk node\")\r\n\r\nwith open(\"input.txt\", \"rt\") as file:\r\n    cave_map = []\r\n    for line in file: cave_map.append([int(char) for char in line.rstrip()])\r\n    cave_map = np.array(cave_map)\r\n\r\ndef path_find(cave_map:np.ndarray, start:Node, goal:Node) -> int:\r\n    \"\"\"Implementation of the A* algorithm to find the least risk path between\r\n    two nodes in the cave\"\"\"\r\n\r\n    # Upper boundary of the map\r\n    max_y = len(cave_map) - 1\r\n    max_x = len(cave_map[0]) - 1\r\n\r\n    # Risk of the starting position\r\n    start_risk = cave_map[start.y, start.x]\r\n    \r\n    # Nodes that are known but weren't visited yet,\r\n    # and their minimum risk to get there\r\n    not_visited:list[Path] = [Path(start_risk, start)]\r\n    \r\n    # Nodes that were already visited\r\n    visited:list[Node] = []\r\n\r\n    while not_visited:\r\n        \r\n        # Get the known unvisited node with the least risk\r\n        risk, node = heappop(not_visited)\r\n\r\n        # Stop if we have arrived at the goal\r\n        if node == goal: return risk - start_risk\r\n\r\n        # Do not go to the node if we have already visited it\r\n        if node in visited: continue\r\n\r\n        # Coordinates of our current position\r\n        x, y = node\r\n\r\n        # Movement choices from our current position\r\n        choices = (x+1, y), (x-1, y), (x, y+1), (x, y-1)\r\n        \r\n        for next_x, next_y in choices:\r\n\r\n            # The destination must be within the map boundaries\r\n            if (0 <= next_x <= max_x) and (0 <= next_y <= max_y):\r\n                \r\n                # Calculate the risk to the next node\r\n                next_risk = risk + cave_map[next_y][next_x]\r\n                next_node = Node(next_x, next_y)\r\n                heappush(not_visited, Path(next_risk, next_node))\r\n            \r\n        visited += [node]\r\n\r\n# Part 1\r\n\r\nstart_time_part1 = perf_counter()\r\ngoal_y, goal_x = cave_map.shape\r\nrisk_part1 = path_find(cave_map, Node(0,0), Node(goal_x-1, goal_y-1))\r\ntotal_time_part1 = perf_counter() - start_time_part1\r\n\r\nprint(f\"Part 1: {risk_part1} (took {total_time_part1:.1f} seconds)\")\r\nwith open(\"results.txt\", \"at\") as file:\r\n    file.write(f\"Part 1: {risk_part1} (took {total_time_part1:.1f} seconds)\\n\")\r\n\r\n# Part 2\r\n\r\ninitial_map = cave_map.copy()\r\ncave_map_p2 = initial_map.copy()\r\n\r\nfor row in range(1, 5):\r\n    new_values = (initial_map + row - 1) % 9 + 1\r\n    cave_map_p2 = np.append(cave_map_p2, new_values, axis=0)\r\n\r\ninitial_map = cave_map_p2.copy()\r\nfor column in range(1, 5):\r\n    new_values = (initial_map + column - 1) % 9 + 1\r\n    cave_map_p2 = np.append(cave_map_p2, new_values, axis=1)\r\n\r\nstart_time_part2 = perf_counter()\r\ngoal_y, goal_x = cave_map_p2.shape\r\nrisk_part2 = path_find(cave_map_p2, Node(0,0), Node(goal_x-1, goal_y-1))\r\ntotal_time_part2 = perf_counter() - start_time_part2\r\n\r\nprint(f\"Part 2: {risk_part2} (took {total_time_part2:.1f} seconds)\")\r\nwith open(\"results.txt\", \"at\") as file:\r\n    file.write(f\"Part 2: {risk_part2} (took {total_time_part2:.1f} seconds)\\n\")\r\n\r\nprint(f\"{total_time_part2 / total_time_part1}\")",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hq5o15p",
+      "id": 0,
+      "likes": 0,
+      "time": "2021-12-27T22:23:06.211Z",
+      "redditData": {
+        "score": 3,
+        "author": "TiagoPaolini",
+        "depth": 0
+      }
     }
   ],
   "comments": [

@@ -246,17 +246,16 @@ say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
                 <!-- todo: add validation stuff (https://getbootstrap.com/docs/5.0/forms/validation/)
                 including ' is-invalid' to class when validating reddit link via api -->
                 <input type="text"
-                       pattern="((https://www.reddit.com/r/adventofcode/|)comments/|)(\w*)/comment/(\w*)(/)?"
-                       title="A url to a solution comment on an Advent of Code day megathread. e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/"
-                       class="form-control" id="newCardRedditLink" name="reddit"
-                       placeholder="/comments/kjtg7y/comment/gnxor36/"
-                       value="comments/kjtg7y/comment/gnxor36/" required>
-                <label for="newCardRedditLink">Reddit Link</label>
+                       pattern="https://www.reddit.com/r/adventofcode/comments/(\w*)/comment/(\w*)(/(\?.*)?)?"
+                       class="form-control" id="newCardRedditUrl" name="redditUrl" tabindex="1"
+                       required>
+                <label for="newCardRedditUrl">Reddit URL</label>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" form="newCardForm">
+            <button type="submit" class="btn btn-primary" form="newCardForm" id="newCardSubmit"
+                    tabindex="1">
               Post!
             </button>
           </div>

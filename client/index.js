@@ -37,34 +37,55 @@ async function postFormDataToUrlAsJSON (url, formData) {
     body: formDataJSONString
   };
 
-  await fetch(url, fetchOptions);
+  return await fetch(url, fetchOptions);
 }
 
 async function formSubmitListener (event) {
-  event.preventDefault();
-
-  const form = event.currentTarget;
-  const formData = new FormData(form);
-
-  let apiPOSTUrl = '';
-  if (form.id === 'newCardForm') {
-    apiPOSTUrl = 'http://127.0.0.1:8000/cards';
-  } else if (form.id === 'newCommentForm') {
-    apiPOSTUrl = 'http://127.0.0.1:8000/comments';
-  }
-
+  const submitButton = document.getElementById('newCardSubmit');
   try {
-    await postFormDataToUrlAsJSON(apiPOSTUrl, formData);
-  } catch (error) {
-    console.error(error);
-  }
+    event.preventDefault();
 
-  // Who knows why this doesn't work - pulled my hair out tyring to get it do so...
-  // const newCardModal = new bootstrap.Modal(document.getElementById('newCardModal'));
-  // newCardModal.hide();
-  document.getElementById('newCardFormModalCloseButton').click();
-  form.reset(); // clear form values
-  // todo: do reloading page elements stuff for dynamic page
+    submitButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    let apiPOSTUrl = '';
+    if (form.id === 'newCardForm') {
+      apiPOSTUrl = 'http://127.0.0.1:8000/cards';
+    } else if (form.id === 'newCommentForm') {
+      apiPOSTUrl = 'http://127.0.0.1:8000/comments';
+    }
+
+    const apiResponse = await postFormDataToUrlAsJSON(apiPOSTUrl, formData);
+    const apiResJSON = await apiResponse.json();
+
+    const linkFormField = document.getElementById('newCardRedditUrl');
+    // eslint-disable-next-line no-undef
+    const linkWarningPopover = new bootstrap.Popover(linkFormField, {
+      title: 'Reddit Link Failed',
+      content: apiResJSON.message + ' e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/',
+      trigger: 'focus'
+    });
+
+    if (!apiResponse.ok) {
+      switch (apiResJSON.error) {
+        case 'reddit-link-failed':
+          linkWarningPopover.show();
+      }
+    } else {
+      // Who knows why this doesn't work - pulled my hair out tyring to get it do so...
+      // const newCardModal = new bootstrap.Modal(document.getElementById('newCardModal'));
+      // newCardModal.hide();
+      document.getElementById('newCardFormModalCloseButton').click();
+      form.reset(); // clear form values and reset code preview
+      resetFormCodePreview();
+      linkWarningPopover.dispose();
+      // todo: do reloading page elements stuff for dynamic page
+    }
+  } finally {
+    submitButton.innerHTML = 'Post!';
+  }
 }
 
 document.getElementById('newCardForm').addEventListener('submit', formSubmitListener);
