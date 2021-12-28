@@ -21,6 +21,14 @@
   overflow-y: scroll;
 }
 
+.like-button {
+  letter-spacing: -3px;
+}
+
+.reddit-info-row {
+  white-space: nowrap;
+}
+
 .float-button {
   position: fixed;
   width: 80px;
