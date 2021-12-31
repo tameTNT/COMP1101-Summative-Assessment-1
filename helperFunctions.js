@@ -58,3 +58,19 @@ module.exports.getRedditData = async function (redditUrl) {
     return undefined;
   }
 };
+
+module.exports.updateCardRedditData = async function (cardObj, newRedditData) {
+  const newCardObj = cardObj;
+  newCardObj.redditData = (({ score, author }) => ({
+    score,
+    author
+  }))(newRedditData);
+
+  if (newRedditData.replies !== '') {
+    newCardObj.redditData.numSubComments = newRedditData.replies.data.children.length;
+  } else {
+    newCardObj.redditData.numSubComments = 0;
+  }
+
+  return newCardObj;
+};

@@ -1,6 +1,48 @@
 {
   "cards": [
     {
+      "title": "People already using Python 3.10",
+      "language": "python",
+      "code": "s = 0\r\nfor x,y in [x.split('|') for x in open(0)]:  # split signal and output\r\n  l = {len(s): set(s) for s in x.split()}    # get number of segments\r\n\r\n  n = ''\r\n  for o in map(set, y.split()):              # loop over output digits\r\n    match len(o), len(o&l[4]), len(o&l[2]):  # mask with known digits\r\n      case 2,_,_: n += '1'\r\n      case 3,_,_: n += '7'\r\n      case 4,_,_: n += '4'\r\n      case 7,_,_: n += '8'\r\n      case 5,2,_: n += '2'\r\n      case 5,3,1: n += '5'\r\n      case 5,3,2: n += '3'\r\n      case 6,4,_: n += '9'\r\n      case 6,3,1: n += '6'\r\n      case 6,3,2: n += '0'\r\n  s += int(n)\r\n\r\nprint(s)",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnoyy04",
+      "id": 1,
+      "likes": 0,
+      "time": "2021-12-31T00:18:57.038Z",
+      "redditData": {
+        "score": 95,
+        "author": "4HbQ",
+        "numSubComments": 10
+      }
+    },
+    {
+      "title": "Classic python golf",
+      "language": "python",
+      "code": "print(sum(int(''.join('53460_1_7_92__8'[(len(o)*len(o&(l:={len(s):set(s)for s in z[:10]})[4])+len(o&l[2]))%16]for o in map(set,z[11:])))for z in[x.split()for x in open(0)]))\r\n",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnp4saz",
+      "id": 2,
+      "likes": 0,
+      "time": "2021-12-31T00:19:55.832Z",
+      "redditData": {
+        "score": 24,
+        "author": "4HbQ",
+        "numSubComments": 5
+      }
+    },
+    {
+      "title": "Rust stuff I don't understand (yet!)",
+      "language": "rust",
+      "code": "fn decode_segment(&self, s: &str) -> usize {\r\n    match (s.len(), self.common_with_one(s), self.common_with_four(s)) {\r\n        (2,2,2) => 1,\r\n        (5,1,2) => 2,\r\n        (5,2,3) => 3,\r\n        (4,2,4) => 4,\r\n        (5,1,3) => 5,\r\n        (6,1,3) => 6,\r\n        (3,2,2) => 7,\r\n        (7,2,4) => 8,\r\n        (6,2,4) => 9,\r\n        (6,2,3) => 0,\r\n        (_,_,_) => panic!()\r\n    }\r\n}",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnpgp65",
+      "id": 3,
+      "likes": 0,
+      "time": "2021-12-31T00:20:42.279Z",
+      "redditData": {
+        "score": 17,
+        "author": "frankbsad",
+        "numSubComments": 2
+      }
+    },
+    {
       "title": "Woah pathfinding!",
       "language": "python",
       "code": "from __future__ import annotations\r\nfrom collections import namedtuple\r\nfrom heapq import heappop, heappush\r\nfrom time import perf_counter\r\nimport numpy as np\r\n\r\nNode = namedtuple(\"Node\", \"x y\")\r\nPath = namedtuple(\"Path\", \"risk node\")\r\n\r\nwith open(\"input.txt\", \"rt\") as file:\r\n    cave_map = []\r\n    for line in file: cave_map.append([int(char) for char in line.rstrip()])\r\n    cave_map = np.array(cave_map)\r\n\r\ndef path_find(cave_map:np.ndarray, start:Node, goal:Node) -> int:\r\n    \"\"\"Implementation of the A* algorithm to find the least risk path between\r\n    two nodes in the cave\"\"\"\r\n\r\n    # Upper boundary of the map\r\n    max_y = len(cave_map) - 1\r\n    max_x = len(cave_map[0]) - 1\r\n\r\n    # Risk of the starting position\r\n    start_risk = cave_map[start.y, start.x]\r\n    \r\n    # Nodes that are known but weren't visited yet,\r\n    # and their minimum risk to get there\r\n    not_visited:list[Path] = [Path(start_risk, start)]\r\n    \r\n    # Nodes that were already visited\r\n    visited:list[Node] = []\r\n\r\n    while not_visited:\r\n        \r\n        # Get the known unvisited node with the least risk\r\n        risk, node = heappop(not_visited)\r\n\r\n        # Stop if we have arrived at the goal\r\n        if node == goal: return risk - start_risk\r\n\r\n        # Do not go to the node if we have already visited it\r\n        if node in visited: continue\r\n\r\n        # Coordinates of our current position\r\n        x, y = node\r\n\r\n        # Movement choices from our current position\r\n        choices = (x+1, y), (x-1, y), (x, y+1), (x, y-1)\r\n        \r\n        for next_x, next_y in choices:\r\n\r\n            # The destination must be within the map boundaries\r\n            if (0 <= next_x <= max_x) and (0 <= next_y <= max_y):\r\n                \r\n                # Calculate the risk to the next node\r\n                next_risk = risk + cave_map[next_y][next_x]\r\n                next_node = Node(next_x, next_y)\r\n                heappush(not_visited, Path(next_risk, next_node))\r\n            \r\n        visited += [node]\r\n\r\n# Part 1\r\n\r\nstart_time_part1 = perf_counter()\r\ngoal_y, goal_x = cave_map.shape\r\nrisk_part1 = path_find(cave_map, Node(0,0), Node(goal_x-1, goal_y-1))\r\ntotal_time_part1 = perf_counter() - start_time_part1\r\n\r\nprint(f\"Part 1: {risk_part1} (took {total_time_part1:.1f} seconds)\")\r\nwith open(\"results.txt\", \"at\") as file:\r\n    file.write(f\"Part 1: {risk_part1} (took {total_time_part1:.1f} seconds)\\n\")\r\n\r\n# Part 2\r\n\r\ninitial_map = cave_map.copy()\r\ncave_map_p2 = initial_map.copy()\r\n\r\nfor row in range(1, 5):\r\n    new_values = (initial_map + row - 1) % 9 + 1\r\n    cave_map_p2 = np.append(cave_map_p2, new_values, axis=0)\r\n\r\ninitial_map = cave_map_p2.copy()\r\nfor column in range(1, 5):\r\n    new_values = (initial_map + column - 1) % 9 + 1\r\n    cave_map_p2 = np.append(cave_map_p2, new_values, axis=1)\r\n\r\nstart_time_part2 = perf_counter()\r\ngoal_y, goal_x = cave_map_p2.shape\r\nrisk_part2 = path_find(cave_map_p2, Node(0,0), Node(goal_x-1, goal_y-1))\r\ntotal_time_part2 = perf_counter() - start_time_part2\r\n\r\nprint(f\"Part 2: {risk_part2} (took {total_time_part2:.1f} seconds)\")\r\nwith open(\"results.txt\", \"at\") as file:\r\n    file.write(f\"Part 2: {risk_part2} (took {total_time_part2:.1f} seconds)\\n\")\r\n\r\nprint(f\"{total_time_part2 / total_time_part1}\")",
@@ -11,7 +53,21 @@
       "redditData": {
         "score": 3,
         "author": "TiagoPaolini",
-        "depth": 0
+        "numSubComments": 0
+      }
+    },
+    {
+      "title": "Testing index",
+      "language": "python",
+      "code": "# part 2 only, cleaned up little bit to make it little more readable\r\n\r\n# this is my own library for downloading the input file\r\nimport advent\r\n\r\ninput_string = advent.get_input(2019, 16).strip()\r\noffset = int(input_string[:7], 10)\r\ninput_list = list(map(int, input_string)) * 10000\r\ninput_length = len(input_list)\r\n\r\nfor i in range(100):\r\n    partial_sum = sum(input_list[j] for j in range(offset, input_length))\r\n    for j in range(offset, input_length):\r\n        t = partial_sum\r\n        partial_sum -= input_list[j]\r\n        if t >= 0:\r\n            input_list[j] = t % 10\r\n        else:\r\n            input_list[j] = (-t) % 10\r\n\r\n            \r\nprint(input_list[offset: offset+8])",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/ebai4g/comment/fb3ksil",
+      "id": 4,
+      "likes": 0,
+      "time": "2021-12-31T01:18:23.348Z",
+      "redditData": {
+        "score": 7,
+        "author": "etotheipi1",
+        "numSubComments": 1
       }
     }
   ],
