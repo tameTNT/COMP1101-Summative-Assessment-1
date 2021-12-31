@@ -4,7 +4,7 @@
   "description": "Programming (Black) Summative Assessment Project - a dynamic single-page app using Bootstrap and JS",
   "main": "index.js",
   "scripts": {
-    "run": "nodemon server.js",
+    "run": "nodemon server.js --ext js",
     "pretest": "eslint ./ --fix",
     "test": "jest"
   },
