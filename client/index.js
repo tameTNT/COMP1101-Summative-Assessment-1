@@ -14,7 +14,24 @@ function highlightAllCode () {
   });
 }
 
-// todo: change highlighting class on form selection change - default to plaintext
+// highlighting live code preview field
+const codeInputArea = document.getElementById('newCardCodeInput');
+const codePreviewArea = document.getElementById('codeInputPreview');
+const codePreviewLangSelect = document.getElementById('languageSelect');
+
+function updateCodeInputArea () {
+  let selectedLang = codePreviewLangSelect.value;
+  if (!selectedLang) { // if default "" value selected
+    selectedLang = 'plaintext';
+  }
+  codePreviewArea.className = `code-text language-${selectedLang} p-2`;
+  codePreviewArea.innerHTML = codeInputArea.value;
+  hljs.highlightElement(codePreviewArea);
+}
+
+codeInputArea.addEventListener('input', updateCodeInputArea);
+codePreviewLangSelect.addEventListener('change', updateCodeInputArea);
+
 function resetFormCodePreview () {
   codePreviewArea.className = 'code-text language-plaintext p-2';
   codePreviewArea.innerHTML = "print('Hello World')";
@@ -85,15 +102,6 @@ async function formSubmitListener (event) {
     submitButton.innerHTML = 'Post!';
   }
 }
-
-// highlighting live code preview field
-const codeInputArea = document.getElementById('newCardCodeInput');
-const codePreviewArea = document.getElementById('codeInputPreview');
-
-codeInputArea.addEventListener('input', (e) => {
-  codePreviewArea.innerHTML = e.target.value;
-  hljs.highlightElement(codePreviewArea);
-});
 
 document.getElementById('newCardForm').addEventListener('submit', formSubmitListener);
 
