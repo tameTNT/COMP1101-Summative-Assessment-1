@@ -17,8 +17,12 @@
 
 .code-text {
   font-family: 'Roboto Mono', monospace;
+  max-height: 300px;
+}
+
+.code-snippet {
+  font-family: 'Roboto Mono', monospace;
   max-height: 150px;
-  overflow-y: scroll;
 }
 
 .like-button {

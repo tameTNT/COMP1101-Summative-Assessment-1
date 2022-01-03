@@ -18,9 +18,6 @@ app.route('/cards(/:id(\\d+))?')
     const reqParamId = req.params.id;
     const reqQueryIds = req.query.ids;
 
-    // console.log(DateTime.fromISO(JSON.parse(JSON.stringify('2021-12-13T22:16:28.278Z'))));
-    // todo: convert time to browser local time objects on client side?
-
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
         console.error(err);

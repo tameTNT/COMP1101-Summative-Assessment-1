@@ -29,6 +29,11 @@
           integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
           crossorigin="anonymous" defer></script>
 
+  <!--  Luxon for timedate handling-->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@2.2.0/build/global/luxon.min.js"
+          integrity="sha256-xqS3EQeErZ6JG7Y//jjn1LB1pxI7ZzK8hVOtpND9BSA="
+          crossorigin="anonymous"></script>
+
   <!-- Own sources inc. favicon, JS and CSS -->
   <link rel="icon" type="image/x-icon" href="favicon.png">
   <script src="./index.js" type="module" defer></script>
@@ -52,189 +57,16 @@
       <div class="ms-2">
         <select class="form-select" aria-label=".form-select sort-by" id="sortingOption">
           <option selected value="time">Recency</option>
-          <option value="like">Likes</option>
+          <option value="likes">Likes</option>
         </select>
       </div>
     </div>
   </header>
 
   <main>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="cards">
-      <div class="col">
-        <div class="card h-100">
-          <h5 class="card-header">Featured</h5>
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <pre><code class="language-python code-text" tabindex="0">value, loop_size = 1, 0
-while value != (card_public_key := 19774466):
-    value = value * 7 % 20201227</code></pre>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#postModal">See post
-            </button>
-          </div>
-          <div class="card-footer text-muted">
-            <div class="d-flex justify-content-between">
-              <div class="text-danger" id="card1Likes">
-                <a href="#" class="text-danger like-button"><3</a> 15
-              </div>
-              <div>
-                <span class="material-icons align-middle md-24">forum</span> 10
-              </div>
-              <div class="text-start">
-                2 days ago
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="cards"></div>
 
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            2 days ago
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            5 hours ago
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Language: python</h6>
-            <p class="card-text">Quick preview</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-          <div class="card-footer text-muted">
-            1 day ago
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100" aria-hidden="true">
-          <div class="card-body">
-            <h5 class="card-title placeholder-glow">
-              <span class="placeholder col-4 rounded-pill"></span>
-            </h5>
-            <h6 class="card-subtitle placeholder-glow mb-2">
-              <span class="placeholder col-8 rounded-pill bg-secondary"></span>
-            </h6>
-            <p class="card-text placeholder-glow">
-              <span class="placeholder col-6 rounded-pill"></span>
-              <span class="placeholder col-4 rounded-pill"></span>
-              <span class="placeholder col-7 rounded-pill"></span>
-            </p>
-            <a href="#" class="btn btn-primary disabled placeholder col-4"></a>
-          </div>
-          <div class="card-footer text-muted placeholder-glow">
-            <span class="placeholder col-5 rounded-pill"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="postModals">
-      <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="post1ModalLabel"
-           aria-hidden="true">
-        <div
-            class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Python Card</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"
-                      aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <pre><code class="language-perl code-text" tabindex="0">sub step($value, $subject_number) { ($value * $subject_number) % 20201227 }
-
-my $value = my $loops = 1;
-$loops++ until ($value = step $value, 7) == (state $pub //= <>);
-say reduce { step $a, state $pub //= <> } 1, 1 .. $loops;</code></pre>
-
-              <div class="container mt-2 mb-2 ms-0">
-                <div class="row align-items-center">
-                  <div class="col-sm-auto">
-                    <a href="#" class="btn btn-outline-primary"
-                       title="Links to source Reddit post">Reddit link</a>
-                  </div>
-                  <div class="col-sm-8 mt-1 mb-1">
-                    <div class="row reddit-info-row">
-                      <div class="col col-sm-auto" title="Reddit upvotes">
-                        <span class="material-icons md-24 align-middle">trending_up</span>
-                        <span class="align-middle">10</span>
-                      </div>
-                      <div class="col col-sm-auto" title="Original Reddit poster">
-                        <span class="material-icons md-24 align-middle">account_circle</span>
-                        <span class="align-middle">tameTNT</span>
-                      </div>
-                      <div class="col col-sm-auto" title="Reddit comment depth">
-                        <span class="material-icons md-24 align-middle">analytics</span>
-                        <span class="align-middle">3</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <p>
-                This is some placeholder content to show the scrolling behavior for modals. We use
-                repeated line breaks to
-                demonstrate how content can exceed minimum inner height, thereby showing inner
-                scrolling. When content
-                becomes longer than the predefined max-height of modal, content will be cropped and
-                scrollable within the
-                modal.
-              </p>
-              <div class="d-flex justify-content-center align-items-center">
-                <span class="material-icons md-36 align-middle me-2">forum</span>
-                <h1><span class="align-middle">Comments</span></h1>
-              </div>
-              <div class="input-group mt-2 mb-2">
-                <span class="input-group-text">Comment:</span>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
-                <button class="btn btn-outline-secondary" type="button">Post</button>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      A comment shortened to one lin...
-                    </div>
-                    <div class="text-muted">
-                      1 day ago
-                    </div>
-                  </div>
-                </li>
-                <!-- todo: shorten comments via JS adapting to device width -->
-                <li class="list-group-item">Another comment which is much ...</li>
-                <li class="list-group-item">Short comment</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="postModals"></div>
 
     <a href="#" class="float-button btn btn-success" data-bs-toggle="modal"
        data-bs-target="#newCardModal">

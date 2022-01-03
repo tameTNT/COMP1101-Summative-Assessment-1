@@ -9,10 +9,11 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="highlight" level="application" />
-    <orderEntry type="library" name="github" level="application" />
     <orderEntry type="library" name="github-dark" level="application" />
     <orderEntry type="library" name="github-dark" level="application" />
     <orderEntry type="library" name="highlight" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="luxon" level="application" />
+    <orderEntry type="library" name="luxon" level="application" />
   </component>
 </module>

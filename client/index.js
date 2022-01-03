@@ -1,6 +1,11 @@
-console.log('Deferred script loading');
+import {
+  makeCardHTMLBlock,
+  makeCardModalHTMLBlock,
+  placeholderCard
+} from './tagGen.js';
 
-// const textFields = Array.from(document.getElementsByClassName('code-text'));
+// eslint-disable-next-line no-undef
+const DateTime = luxon.DateTime;
 
 // standard code highlighting across page
 function highlightAllCode () {
@@ -9,35 +14,14 @@ function highlightAllCode () {
   });
 }
 
-// highlighting live code preview field
-const codeInputArea = document.getElementById('newCardCodeInput');
-const codePreviewArea = document.getElementById('codeInputPreview');
-codeInputArea.addEventListener('input', (e) => {
-  codePreviewArea.innerHTML = e.target.value;
-  hljs.highlightElement(codePreviewArea);
-});
-
+// todo: change highlighting class on form selection change - default to plaintext
 function resetFormCodePreview () {
+  codePreviewArea.className = 'code-text language-plaintext p-2';
   codePreviewArea.innerHTML = "print('Hello World')";
   hljs.highlightElement(codePreviewArea);
 }
 
-// initial highlighting on DOM load
-highlightAllCode();
-resetFormCodePreview();
-
-const langSelect = document.getElementById('languageSelect');
-hljs.listLanguages().forEach((langName) => {
-  const opt = document.createElement('option');
-  const capLangName = langName.charAt(0).toUpperCase() + langName.slice(1);
-  opt.value = langName;
-  opt.innerHTML = capLangName;
-
-  langSelect.appendChild(opt);
-});
-
-// todo: change highlighting class on form selection change
-
+// todo: gracefully handle disconnect
 async function postFormDataToUrlAsJSON (url, formData) {
   const plainData = Object.fromEntries(formData.entries());
   const formDataJSONString = JSON.stringify(plainData);
@@ -66,9 +50,9 @@ async function formSubmitListener (event) {
 
     let apiPOSTUrl = '';
     if (form.id === 'newCardForm') {
-      apiPOSTUrl = 'http://127.0.0.1:8000/cards';
+      apiPOSTUrl = 'cards';
     } else if (form.id === 'newCommentForm') {
-      apiPOSTUrl = 'http://127.0.0.1:8000/comments';
+      apiPOSTUrl = 'comments';
     }
 
     const apiResponse = await postFormDataToUrlAsJSON(apiPOSTUrl, formData);
@@ -102,8 +86,108 @@ async function formSubmitListener (event) {
   }
 }
 
+// highlighting live code preview field
+const codeInputArea = document.getElementById('newCardCodeInput');
+const codePreviewArea = document.getElementById('codeInputPreview');
+
+codeInputArea.addEventListener('input', (e) => {
+  codePreviewArea.innerHTML = e.target.value;
+  hljs.highlightElement(codePreviewArea);
+});
+
 document.getElementById('newCardForm').addEventListener('submit', formSubmitListener);
 
-// todo: when updating page dynamically, use template literals with tag functions e.g.
-//   function foo (header) { return `<h1>${'header'}</h1>`}
-//   see StackOverflow "Can ES6 template literals be substituted at runtime?"
+/**
+ * @param {string} string
+ */
+function firstLetterUpper (string) {
+  // src: https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const langSelect = document.getElementById('languageSelect');
+hljs.listLanguages().forEach((langName) => {
+  const opt = document.createElement('option');
+  const capLangName = firstLetterUpper(langName);
+  opt.value = langName;
+  opt.innerHTML = capLangName;
+
+  langSelect.appendChild(opt);
+});
+
+const documentCards = document.getElementById('cards');
+const documentCardModals = document.getElementById('postModals');
+const sortSelector = document.getElementById('sortingOption');
+
+async function getAllCards (sortBy) {
+  documentCards.innerHTML = placeholderCard().repeat(3);
+  const apiResponse = await fetch('cards');
+  const cards = await apiResponse.json();
+  for (const card of cards) {
+    // convert to DateTime object so that times can be compared and sorted
+    card.time = DateTime.fromISO(card.time);
+  }
+  // sorts in descending order - recent to old; highest likes to lowest
+  const currentCardArray = cards;
+  currentCardArray.sortBy = function (sortParameter) {
+    function compare (a, b) {
+      const left = a[sortParameter];
+      const right = b[sortParameter];
+
+      if (left < right) {
+        return -1;
+      }
+      if (left > right) {
+        return 1;
+      }
+      return 0;
+    }
+
+    this.sort(compare);
+  };
+  currentCardArray.sortBy(sortBy);
+  return currentCardArray;
+}
+
+function insertCardsOnPage (cardArray) {
+  documentCards.innerHTML = '';
+  documentCardModals.innerHTML = '';
+
+  for (const card of cardArray) {
+    const relativeTime = card.time.toRelative();
+    // noinspection JSCheckFunctionSignatures
+    const exactTime = card.time.toLocaleString({
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+
+    const langUpper = firstLetterUpper(card.language);
+
+    documentCards.innerHTML = makeCardHTMLBlock(
+        // todo: actually count comments for commentNum label
+        card.title, langUpper, card.code, card.id, card.likes, 0, relativeTime, exactTime
+    ) + documentCards.innerHTML;
+
+    documentCardModals.innerHTML = makeCardModalHTMLBlock(
+        card.id, card.title, langUpper, card.code, card.redditUrl, card.redditData.score, card.redditData.author, card.redditData.numSubComments
+    ) + documentCardModals.innerHTML;
+  }
+}
+
+function getAllCardsCallback (cardArray) {
+  insertCardsOnPage(cardArray);
+  document.querySelectorAll('.temp-placeholder-card').forEach(e => e.remove());
+  highlightAllCode();
+  resetFormCodePreview();
+}
+
+function updateCards () {
+  getAllCards(sortSelector.value).then((cardArray) => getAllCardsCallback(cardArray));
+}
+
+sortSelector.addEventListener('change', updateCards);
+updateCards();
