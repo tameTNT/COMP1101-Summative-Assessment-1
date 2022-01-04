@@ -1,6 +1,3 @@
-// todo: comment this stuff and all html etc.
-// noinspection JSUnresolvedVariable
-
 const fs = require('fs');
 
 const { DateTime } = require('luxon');
@@ -16,6 +13,7 @@ app.use(express.json());
 app.route('/cards(/:id(\\d+))?')
   .get((req, res) => {
     const reqParamId = req.params.id;
+    // noinspection JSUnresolvedVariable
     const reqQueryIds = req.query.ids;
 
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
@@ -104,6 +102,7 @@ app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
 app.route('/comments(/:id(\\d+))?')
   .get((req, res) => {
     const reqParamId = req.params.id;
+    // noinspection JSUnresolvedVariable
     const reqQueryIds = req.query.ids;
     const comments = require('./serverdb.json').comments;
     res.send(helpers.handleIdUrl(comments, reqParamId, reqQueryIds));

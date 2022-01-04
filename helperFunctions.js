@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-// todo: add proper JSDocs to everything
 
 module.exports.isEmpty = function (obj) {
   // https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
@@ -11,13 +10,13 @@ module.exports.isEmpty = function (obj) {
 };
 
 /**
- * @param {Object[]} list
+ * @param {Object[]} array
  * @param {Number[]} ids
  * @return {Object[]}
  */
-const search = function (list, ids) {
+const search = function (array, ids) {
   const results = [];
-  for (const item of list) {
+  for (const item of array) {
     if (ids.includes(item.id)) {
       results.push(item);
     }
@@ -66,7 +65,9 @@ module.exports.updateCardRedditData = async function (cardObj, newRedditData) {
     author
   }))(newRedditData);
 
+  // noinspection JSUnresolvedVariable
   if (newRedditData.replies !== '') {
+    // noinspection JSUnresolvedVariable
     newCardObj.redditData.numSubComments = newRedditData.replies.data.children.length;
   } else {
     newCardObj.redditData.numSubComments = 0;

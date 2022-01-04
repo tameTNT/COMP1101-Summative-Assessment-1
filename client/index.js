@@ -96,7 +96,6 @@ async function formSubmitListener (event) {
       form.reset(); // clear form values and reset code preview
       resetFormCodePreview();
       linkWarningPopover.dispose();
-      // todo: do reloading page elements stuff for dynamic page
     }
   } finally {
     submitButton.innerHTML = 'Post!';
@@ -176,12 +175,12 @@ function insertCardsOnPage (cardArray) {
     const langUpper = firstLetterUpper(card.language);
 
     documentCards.innerHTML = makeCardHTMLBlock(
-        // todo: actually count comments for commentNum label
-        card.title, langUpper, card.code, card.id, card.likes, 0, relativeTime, exactTime
+      // todo: actually count comments for commentNum label
+      card.title, langUpper, card.code, card.id, card.likes, 0, relativeTime, exactTime
     ) + documentCards.innerHTML;
 
     documentCardModals.innerHTML = makeCardModalHTMLBlock(
-        card.id, card.title, langUpper, card.code, card.redditUrl, card.redditData.score, card.redditData.author, card.redditData.numSubComments
+      card.id, card.title, langUpper, card.code, card.redditUrl, card.redditData.score, card.redditData.author, card.redditData.numSubComments
     ) + documentCardModals.innerHTML;
   }
 }

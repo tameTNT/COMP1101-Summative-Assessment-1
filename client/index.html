@@ -87,7 +87,7 @@
             <form id="newCardForm">
               <div class="form-floating m-3">
                 <input class="form-control" id="newCardTitleInput" name="title"
-                       placeholder="A Wacky Post Title" tabindex="0"
+                       placeholder="title" tabindex="0"
                        required>
                 <label for="newCardTitleInput">Post Title</label>
               </div>
@@ -100,7 +100,7 @@
 
               <div class="form-floating m-3 flex-nowrap">
                 <textarea class="form-control code-text"
-                          name="code" tabindex="0"
+                          name="code" placeholder="code" tabindex="0"
                           spellcheck="false" id="newCardCodeInput"
                           style="height: 100px; white-space: pre"
                           required>print('Hello World')</textarea>
@@ -112,19 +112,16 @@
                  role="button" aria-expanded="false" aria-controls="collapseCodePreview">
                 Show/hide code preview
               </a>
+
               <div class="collapse m-3" id="collapseCodePreview">
-                <div class="card card-body">
-                  <div id="codeInputPreview" class="code-text language-python p-2"
-                       style="white-space: pre" tabindex="0"></div>
-                </div>
+                <div id="codeInputPreview" class="code-text language-python p-2"
+                     style="white-space: pre" tabindex="0"></div>
               </div>
 
               <div class="form-floating m-3">
-                <!-- todo: add validation stuff (https://getbootstrap.com/docs/5.0/forms/validation/)
-                including ' is-invalid' to class when validating reddit link via api -->
-                <input type="text"
+                <input class="form-control" type="text" id="newCardRedditUrl"
                        pattern="https://www.reddit.com/r/adventofcode/comments/(\w*)/comment/(\w*)(/(\?.*)?)?"
-                       class="form-control" id="newCardRedditUrl" name="redditUrl" tabindex="0"
+                       name="redditUrl" placeholder="redditUrl" tabindex="0"
                        required>
                 <label for="newCardRedditUrl">Reddit Comment URL</label>
               </div>
