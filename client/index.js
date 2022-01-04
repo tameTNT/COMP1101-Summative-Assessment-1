@@ -1,6 +1,8 @@
 import {
+  makeAlert,
   makeCardHTMLBlock,
   makeCardModalHTMLBlock,
+  noCardsCard,
   placeholderCard
 } from './tagGen.js';
 
@@ -38,7 +40,6 @@ function resetFormCodePreview () {
   hljs.highlightElement(codePreviewArea);
 }
 
-// todo: gracefully handle disconnect
 async function postFormDataToUrlAsJSON (url, formData) {
   const plainData = Object.fromEntries(formData.entries());
   const formDataJSONString = JSON.stringify(plainData);
@@ -96,7 +97,14 @@ async function formSubmitListener (event) {
       form.reset(); // clear form values and reset code preview
       resetFormCodePreview();
       linkWarningPopover.dispose();
+      updateCards();
     }
+  } catch (e) {
+    const alertDiv = document.getElementById('formErrorAlert');
+    alertDiv.innerHTML = makeAlert(
+      'Post creation failed!',
+      'You might have lost connection to the server.'
+    );
   } finally {
     submitButton.innerHTML = 'Post!';
   }
@@ -126,16 +134,32 @@ const documentCards = document.getElementById('cards');
 const documentCardModals = document.getElementById('postModals');
 const sortSelector = document.getElementById('sortingOption');
 
+let cardArrayTemp = [];
+
 async function getAllCards (sortBy) {
+  documentCards.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4';
   documentCards.innerHTML = placeholderCard().repeat(3);
-  const apiResponse = await fetch('cards');
-  const cards = await apiResponse.json();
-  for (const card of cards) {
-    // convert to DateTime object so that times can be compared and sorted
-    card.time = DateTime.fromISO(card.time);
+
+  let currentCardArray = [];
+  try {
+    const apiResponse = await fetch('cards');
+    currentCardArray = await apiResponse.json();
+    for (const card of currentCardArray) {
+      // convert to DateTime object so that times can be compared and sorted
+      card.time = DateTime.fromISO(card.time);
+    }
+    // sorts in descending order - recent to old; highest likes to lowest
+    cardArrayTemp = currentCardArray;
+  } catch (e) {
+    const alertDiv = document.getElementById('pageErrorAlert');
+    alertDiv.innerHTML = makeAlert(
+      'Card update failed!',
+      'You might have lost connection to the server. The cards shown may be outdated.'
+    );
+
+    currentCardArray = cardArrayTemp;
   }
-  // sorts in descending order - recent to old; highest likes to lowest
-  const currentCardArray = cards;
+
   currentCardArray.sortBy = function (sortParameter) {
     function compare (a, b) {
       const left = a[sortParameter];
@@ -160,34 +184,40 @@ function insertCardsOnPage (cardArray) {
   documentCards.innerHTML = '';
   documentCardModals.innerHTML = '';
 
-  for (const card of cardArray) {
-    const relativeTime = card.time.toRelative();
-    // noinspection JSCheckFunctionSignatures
-    const exactTime = card.time.toLocaleString({
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit'
-    });
+  if (cardArray.length === 0) {
+    documentCards.innerHTML = noCardsCard();
+    documentCards.className = 'row row-cols-1';
+  } else {
+    for (const card of cardArray) {
+      const relativeTime = card.time.toRelative();
+      // noinspection JSCheckFunctionSignatures
+      const exactTime = card.time.toLocaleString({
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      });
 
-    const langUpper = firstLetterUpper(card.language);
+      const langUpper = firstLetterUpper(card.language);
 
-    documentCards.innerHTML = makeCardHTMLBlock(
-      // todo: actually count comments for commentNum label
-      card.title, langUpper, card.code, card.id, card.likes, 0, relativeTime, exactTime
-    ) + documentCards.innerHTML;
+      documentCards.innerHTML = makeCardHTMLBlock(
+        // todo: actually count comments for commentNum label
+        card.title, langUpper, card.code, card.id, card.likes,
+        0, relativeTime, exactTime
+      ) + documentCards.innerHTML;
 
-    documentCardModals.innerHTML = makeCardModalHTMLBlock(
-      card.id, card.title, langUpper, card.code, card.redditUrl, card.redditData.score, card.redditData.author, card.redditData.numSubComments
-    ) + documentCardModals.innerHTML;
+      documentCardModals.innerHTML = makeCardModalHTMLBlock(
+        card.id, card.title, langUpper, card.code, card.redditUrl,
+        card.redditData.score, card.redditData.author, card.redditData.numSubComments
+      ) + documentCardModals.innerHTML;
+    }
   }
 }
 
 function getAllCardsCallback (cardArray) {
   insertCardsOnPage(cardArray);
-  document.querySelectorAll('.temp-placeholder-card').forEach(e => e.remove());
   highlightAllCode();
   resetFormCodePreview();
 }

@@ -1,4 +1,4 @@
-export function makeCardHTMLBlock(title, language, code, id, likes, commentNum, relativeTime, exactTime) {
+export function makeCardHTMLBlock (title, language, code, id, likes, commentNum, relativeTime, exactTime) {
   return `
 <div class="col">
   <div class="card h-100">
@@ -27,7 +27,7 @@ export function makeCardHTMLBlock(title, language, code, id, likes, commentNum, 
 </div>`;
 }
 
-export function makeCardModalHTMLBlock(id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
+export function makeCardModalHTMLBlock (id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
   return `
 <div class="modal fade" id="postId-${id}" tabindex="-1" aria-labelledby="postId-${id}ModalLabel"
            aria-hidden="true">
@@ -95,7 +95,7 @@ export function makeCardModalHTMLBlock(id, title, language, code, redditLink, rU
 </div>`;
 }
 
-export function placeholderCard() {
+export function placeholderCard () {
   return `
 <div class="col temp-placeholder-card">
   <div class="card h-100" aria-hidden="true">
@@ -115,6 +115,26 @@ export function placeholderCard() {
     </div>
     <div class="card-footer text-muted placeholder-glow">
       <span class="placeholder col-5 rounded-pill"></span>
+    </div>
+  </div>
+</div>`;
+}
+
+export function makeAlert (strong, body) {
+  return `
+<div class="alert alert-danger alert-dismissible fade show m-3 mt-1" role="alert">
+  <strong>${strong}</strong> ${body}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>`;
+}
+
+export function noCardsCard () {
+  return `
+<div class="col">
+  <div class="card h-100">
+    <div class="card-body">
+      <h5 class="card-title">There are no cards to display :(</h5>
+      <p class="card-text">Why not add one using the new post button below?</p>
     </div>
   </div>
 </div>`;
