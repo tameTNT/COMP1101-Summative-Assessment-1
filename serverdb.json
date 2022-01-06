@@ -16,38 +16,6 @@
       }
     },
     {
-      "title": "People already using Python 3.10",
-      "language": "python",
-      "code": "s = 0\r\nfor x,y in [x.split('|') for x in open(0)]:  # split signal and output\r\n  l = {len(s): set(s) for s in x.split()}    # get number of segments\r\n\r\n  n = ''\r\n  for o in map(set, y.split()):              # loop over output digits\r\n    match len(o), len(o&l[4]), len(o&l[2]):  # mask with known digits\r\n      case 2,_,_: n += '1'\r\n      case 3,_,_: n += '7'\r\n      case 4,_,_: n += '4'\r\n      case 7,_,_: n += '8'\r\n      case 5,2,_: n += '2'\r\n      case 5,3,1: n += '5'\r\n      case 5,3,2: n += '3'\r\n      case 6,4,_: n += '9'\r\n      case 6,3,1: n += '6'\r\n      case 6,3,2: n += '0'\r\n  s += int(n)\r\n\r\nprint(s)",
-      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnoyy04",
-      "id": 1,
-      "likes": 0,
-      "time": "2021-12-31T00:18:57.038Z",
-      "comments": [],
-      "redditData": {
-        "score": 93,
-        "author": "4HbQ",
-        "numSubComments": 10
-      }
-    },
-    {
-      "title": "Classic python golf",
-      "language": "python",
-      "code": "print(sum(int(''.join('53460_1_7_92__8'[(len(o)*len(o&(l:={len(s):set(s)for s in z[:10]})[4])+len(o&l[2]))%16]for o in map(set,z[11:])))for z in[x.split()for x in open(0)]))\r\n",
-      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnp4saz",
-      "id": 2,
-      "likes": 19,
-      "time": "2021-12-31T00:19:55.832Z",
-      "comments": [
-        3
-      ],
-      "redditData": {
-        "score": 23,
-        "author": "4HbQ",
-        "numSubComments": 5
-      }
-    },
-    {
       "title": "Rust stuff I don't understand (yet!)",
       "language": "rust",
       "code": "fn decode_segment(&self, s: &str) -> usize {\r\n    match (s.len(), self.common_with_one(s), self.common_with_four(s)) {\r\n        (2,2,2) => 1,\r\n        (5,1,2) => 2,\r\n        (5,2,3) => 3,\r\n        (4,2,4) => 4,\r\n        (5,1,3) => 5,\r\n        (6,1,3) => 6,\r\n        (3,2,2) => 7,\r\n        (7,2,4) => 8,\r\n        (6,2,4) => 9,\r\n        (6,2,3) => 0,\r\n        (_,_,_) => panic!()\r\n    }\r\n}",
@@ -59,7 +27,7 @@
         2
       ],
       "redditData": {
-        "score": 16,
+        "score": 17,
         "author": "frankbsad",
         "numSubComments": 2
       }
@@ -85,6 +53,40 @@
         "author": "etotheipi1",
         "numSubComments": 1
       }
+    },
+    {
+      "title": "Classic python golf",
+      "language": "python",
+      "code": "print(sum(int(''.join('53460_1_7_92__8'[(len(o)*len(o&(l:={len(s):set(s)for s in z[:10]})[4])+len(o&l[2]))%16]for o in map(set,z[11:])))for z in[x.split()for x in open(0)]))\r\n",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnp4saz",
+      "id": 2,
+      "likes": 19,
+      "time": "2021-12-31T00:19:55.832Z",
+      "comments": [
+        3
+      ],
+      "redditData": {
+        "score": 22,
+        "author": "4HbQ",
+        "numSubComments": 5
+      }
+    },
+    {
+      "title": "People already using Python 3.10",
+      "language": "python",
+      "code": "s = 0\r\nfor x,y in [x.split('|') for x in open(0)]:  # split signal and output\r\n  l = {len(s): set(s) for s in x.split()}    # get number of segments\r\n\r\n  n = ''\r\n  for o in map(set, y.split()):              # loop over output digits\r\n    match len(o), len(o&l[4]), len(o&l[2]):  # mask with known digits\r\n      case 2,_,_: n += '1'\r\n      case 3,_,_: n += '7'\r\n      case 4,_,_: n += '4'\r\n      case 7,_,_: n += '8'\r\n      case 5,2,_: n += '2'\r\n      case 5,3,1: n += '5'\r\n      case 5,3,2: n += '3'\r\n      case 6,4,_: n += '9'\r\n      case 6,3,1: n += '6'\r\n      case 6,3,2: n += '0'\r\n  s += int(n)\r\n\r\nprint(s)",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnoyy04",
+      "id": 1,
+      "likes": 0,
+      "time": "2021-12-31T00:18:57.038Z",
+      "comments": [
+        8
+      ],
+      "redditData": {
+        "score": 93,
+        "author": "4HbQ",
+        "numSubComments": 10
+      }
     }
   ],
   "comments": [
@@ -92,49 +94,64 @@
       "content": "This is a fancy dancy new comment with some spelling mistakes. I wonder if this will go over the character limit for the line?\nNew line is cool.",
       "parent": 4,
       "id": 0,
-      "time": "2022-01-06T13:12:00.679Z"
+      "time": "2022-01-06T13:12:00.679Z",
+      "lastEdited": null
     },
     {
       "content": "Let's add another comment to the same post - why not? I mean, I'm pretty sure there's no character limit 🤷‍♀️... Pretty epic. Would be cool.",
       "parent": 4,
       "id": 1,
-      "time": "2022-01-06T13:13:38.420Z"
+      "time": "2022-01-06T13:13:38.420Z",
+      "lastEdited": null
     },
     {
       "content": "Finally a comment on a different post! How exciting. More of that please.",
       "parent": 3,
       "id": 2,
-      "time": "2022-01-06T13:27:59.172Z"
+      "time": "2022-01-06T13:27:59.172Z",
+      "lastEdited": null
     },
     {
-      "content": "Add another comment right there where it hurts",
+      "content": "Add another comment right there where it hurts. That did hurt tbf.",
       "parent": 2,
       "id": 3,
-      "time": "2022-01-06T13:29:22.286Z"
+      "time": "2022-01-06T13:29:22.286Z",
+      "lastEdited": "2022-01-06T16:35:25.531Z"
     },
     {
       "content": "We lost the new line boys. That's kinda sad. More down the line. New lines get cancelled. :( Just like that. Cool.",
       "parent": 4,
       "id": 4,
-      "time": "2022-01-06T15:02:37.781Z"
+      "time": "2022-01-06T15:02:37.781Z",
+      "lastEdited": null
     },
     {
       "content": "More comments!\r\nMore!\r\nMore!",
       "parent": 4,
       "id": 5,
-      "time": "2022-01-06T15:32:03.371Z"
+      "time": "2022-01-06T15:32:03.371Z",
+      "lastEdited": null
     },
     {
       "content": "More and more comments flooding in here!",
       "parent": 4,
       "id": 6,
-      "time": "2022-01-06T15:32:13.074Z"
+      "time": "2022-01-06T15:32:13.074Z",
+      "lastEdited": null
     },
     {
       "content": "Another one - watch that counter update LIVE! That's pretty epic.",
       "parent": 4,
       "id": 7,
-      "time": "2022-01-06T15:35:41.232Z"
+      "time": "2022-01-06T15:35:41.232Z",
+      "lastEdited": null
+    },
+    {
+      "content": "First! Edited * An' again",
+      "parent": 1,
+      "id": 8,
+      "time": "2022-01-06T16:31:26.568Z",
+      "lastEdited": "2022-01-06T16:37:36.114Z"
     }
   ]
 }

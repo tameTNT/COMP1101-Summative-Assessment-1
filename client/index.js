@@ -9,6 +9,14 @@ import {
 
 // eslint-disable-next-line no-undef
 const DateTime = luxon.DateTime;
+const TIMESTRINGFORMAT = {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+  day: '2-digit',
+  month: '2-digit',
+  year: '2-digit'
+};
 
 // standard code highlighting across page
 function highlightAllCode () {
@@ -219,14 +227,7 @@ function insertCardsOnPage (cardArray) {
     for (const card of cardArray) {
       const relativeTime = card.time.toRelative();
       // noinspection JSCheckFunctionSignatures
-      const exactTime = card.time.toLocaleString({
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      });
+      const exactTime = card.time.toLocaleString(TIMESTRINGFORMAT);
 
       const langUpper = firstLetterUpper(card.language);
 
@@ -303,7 +304,18 @@ function updateComments (cardId) {
     if (commentArray.length > 0) {
       for (const comment of commentArray) {
         comment.time = DateTime.fromISO(comment.time);
-        commentsULEl.innerHTML += commentLiElement(comment.id, comment.content, comment.time.toRelative());
+
+        let timeDetailString = '';
+        if (comment.lastEdited) {
+          comment.lastEdited = DateTime.fromISO(comment.lastEdited);
+          // noinspection JSCheckFunctionSignatures
+          timeDetailString = `Edited ${comment.lastEdited.toLocaleString(TIMESTRINGFORMAT)}`;
+        } else {
+          // noinspection JSCheckFunctionSignatures
+          timeDetailString = comment.time.toLocaleString(TIMESTRINGFORMAT);
+        }
+
+        commentsULEl.innerHTML += commentLiElement(comment.id, comment.content, comment.time.toRelative(), timeDetailString);
       }
       commentsULEl.querySelectorAll('a').forEach((el) => {
         el.addEventListener('click', () => editCommentAction(el), { once: true });
@@ -317,30 +329,36 @@ function updateComments (cardId) {
 sortSelector.addEventListener('change', updateCards);
 updateCards();
 
-function editCommentAction (button) {
-  const commentId = button.id.match(/\d+/)[0];
-  const cardId = button.closest('ul').id.match(/\d+/)[0];
-  const contentDiv = button.closest('.list-group-item').querySelector('.comment-content');
+function editCommentAction (linkEl) {
+  const commentId = linkEl.id.match(/\d+/)[0];
+  const cardId = linkEl.closest('ul').id.match(/\d+/)[0];
+  const contentDiv = linkEl.closest('.list-group-item').querySelector('.comment-content');
   const oldContentCache = contentDiv.innerText;
   contentDiv.contentEditable = 'true';
+  linkEl.innerHTML = linkEl.innerHTML.replace(/edit/, 'done').replace(/secondary/, 'success');
+  linkEl.title = 'Done!';
+
   contentDiv.focus();
-  button.innerHTML = button.innerHTML.replace(/edit/, 'done').replace(/secondary/, 'success');
-  button.addEventListener('click', () => {
+
+  linkEl.addEventListener('click', () => {
     contentDiv.contentEditable = 'false';
-    button.innerHTML = button.innerHTML.replace(/done/, 'edit').replace(/success/, 'secondary');
+    linkEl.innerHTML = linkEl.innerHTML.replace(/done/, 'edit').replace(/success/, 'secondary');
+    linkEl.title = 'Edit comment';
     contentDiv.innerText = contentDiv.innerText.replace('\n', ' ');
 
-    putComment(commentId, contentDiv.innerText).then((status) => {
-      if (status === 'FAIL') {
+    putComment(commentId, contentDiv.innerText).then((statusStr) => {
+      if (statusStr === 'FAIL') {
         const alertDiv = document.getElementById(`commentAlert${cardId}`);
         alertDiv.innerHTML = makeAlert(
           'Comment edit failed!',
           'You might have lost connection to the server. Try editing the comment again later.'
         );
         contentDiv.textContent = oldContentCache;
+      } else {
+        updateComments(cardId);
       }
 
-      button.addEventListener('click', () => editCommentAction(button), { once: true });
+      linkEl.addEventListener('click', () => editCommentAction(linkEl), { once: true });
     });
   }, { once: true });
 }

@@ -89,20 +89,33 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
 </div>`;
 }
 
-export function commentLiElement (id, content, relativeTime) {
+export function commentLiElement (id, content, relativeTime, timeDetailString) {
   if (relativeTime) {
-    return `
+    let baseString = `
 <li class="list-group-item">
   <div class="d-flex">
     <div class="me-auto comment-content">
       ${content}
     </div>
     <div>
-      <a href="#" id="editComment-${id}"><span class="material-icons md-18 align-middle link-secondary">edit</span></a>
-    </div>
-    <div class="text-muted ms-1">
+      <a href="#" id="editComment-${id}" title="Edit comment">
+        <span class="material-icons md-18 align-middle link-secondary">edit</span>
+      </a>
+    </div>`;
+
+    if (timeDetailString.includes('Edited')) {
+      baseString += `
+    <div class="text-muted ms-1" title="${timeDetailString}">
+      ${relativeTime} *
+    </div>`;
+    } else {
+      baseString += `
+    <div class="text-muted ms-1" title="${timeDetailString}">
       ${relativeTime}
-    </div>
+    </div>`;
+    }
+
+    return baseString + `
   </div>
 </li>`;
   } else {

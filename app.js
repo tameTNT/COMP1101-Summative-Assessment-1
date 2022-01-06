@@ -151,6 +151,7 @@ app.route('/comments(/:id(\\d+))?')
 
         newComment.id = helpers.getNewValidId(jsonData.comments);
         newComment.time = DateTime.now().toUTC();
+        newComment.lastEdited = null;
 
         // adds comment id to parent card's comment array property
         const parentCard = helpers.search(jsonData.cards, [newComment.parent])[0];
@@ -183,6 +184,7 @@ app.route('/comments(/:id(\\d+))?')
 
         const targetComment = helpers.handleIdUrl(jsonData.comments, reqParamId, '')[0];
         targetComment.content = newCommentContent;
+        targetComment.lastEdited = DateTime.now().toUTC();
 
         const jsonString = JSON.stringify(jsonData, null, 2);
         fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
