@@ -162,6 +162,9 @@ async function getAllCards (sortBy) {
   documentCards.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4';
   documentCards.innerHTML = placeholderCard().repeat(3);
 
+  const alertDiv = document.getElementById('pageErrorAlert');
+  alertDiv.innerHTML = '';
+
   let currentCardArray = [];
   try {
     const apiResponse = await fetch('cards');
@@ -172,7 +175,6 @@ async function getAllCards (sortBy) {
     }
     cardArrayCache = currentCardArray;
   } catch (e) {
-    const alertDiv = document.getElementById('pageErrorAlert');
     alertDiv.innerHTML = makeAlert(
       'Card update failed!',
       'You might have lost connection to the server. The cards shown may be outdated.'
@@ -264,6 +266,9 @@ function updateCards () {
 const commentCache = Object();
 
 async function getComments (cardId) {
+  const alertDiv = document.getElementById(`commentAlert${cardId}`);
+  alertDiv.innerHTML = '';
+
   try {
     let apiResponse = await fetch(`cards/${cardId}`);
     let apiResponseJSON = await apiResponse.json();
@@ -277,7 +282,6 @@ async function getComments (cardId) {
       commentCache[cardId] = [];
     }
   } catch (e) {
-    const alertDiv = document.getElementById(`commentAlert${cardId}`);
     alertDiv.innerHTML = makeAlert(
       'Comment loading failed!',
       'You might have lost connection to the server. The comments shown may be outdated.'
@@ -290,7 +294,7 @@ function updateComments (cardId) {
   const commentsULEl = document.getElementById(`card${cardId}CommentsList`);
   commentsULEl.innerHTML = `<div class="d-flex justify-content-center">
   <div class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
+    <span class="visually-hidden">Loading comments...</span>
   </div>
 </div>`;
 
