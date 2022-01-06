@@ -1,4 +1,4 @@
-export function makeCardHTMLBlock (title, language, code, id, likes, commentNum, relativeTime, exactTime) {
+export function makeCardHTMLBlock (title, language, code, id, likes, commentCount, relativeTime, exactTime) {
   return `
 <div class="col">
   <div class="card h-100">
@@ -15,8 +15,8 @@ export function makeCardHTMLBlock (title, language, code, id, likes, commentNum,
         <div class="text-danger" id="card1Likes">
           ${likes} <a href="#" class="text-danger like-button"><3</a> s
         </div>
-        <div>
-          <span class="material-icons align-middle md-24">forum</span> ${commentNum}
+        <div id="post${id}CommentCount">
+          <span class="material-icons align-middle md-24">forum</span> ${commentCount}
         </div>
         <div class="text-start" title="${exactTime}">
           ${relativeTime}
@@ -69,30 +69,36 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
           <span class="material-icons md-36 align-middle me-2">forum</span>
           <h1><span class="align-middle">Comments</span></h1>
         </div>
-        <div class="input-group mt-2 mb-2">
-          <span class="input-group-text">Comment:</span>
-          <textarea class="form-control" aria-label="With textarea"></textarea>
-          <button class="btn btn-outline-secondary" type="button">Post</button>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <div>
-                A comment shortened to one lin...
-              </div>
-              <div class="text-muted">
-                1 day ago
-              </div>
-            </div>
-          </li>
+        <form class="comment-form" id="commentForm${id}">
+          <div class="input-group mt-2 mb-2">
+            <span class="input-group-text">Comment:</span>
+            <textarea class="form-control" aria-label="Comment Text" name="content"></textarea>
+            <button class="btn btn-outline-secondary" type="submit" id="commentPostButton${id}">Post!</button>
+          </div>
+          <div id="commentAlert${id}"></div>
+        </form>
+        <ul class="list-group list-group-flush" id="card${id}CommentsList">
           <!-- todo: shorten comments via JS adapting to device width -->
-          <li class="list-group-item">Another comment which is much ...</li>
-          <li class="list-group-item">Short comment</li>
+          <!-- todo: make comments separate scrollable -->
         </ul>
       </div>
     </div>
   </div>
 </div>`;
+}
+
+export function commentLiElement (content, relativeTime) {
+  return `
+<li class="list-group-item">
+  <div class="d-flex justify-content-between">
+    <div>
+      ${content}
+    </div>
+    <div class="text-muted">
+      ${relativeTime}
+    </div>
+  </div>
+</li>`;
 }
 
 export function placeholderCard () {

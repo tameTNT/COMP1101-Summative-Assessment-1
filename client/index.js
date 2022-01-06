@@ -1,4 +1,5 @@
 import {
+  commentLiElement,
   makeAlert,
   makeCardHTMLBlock,
   makeCardModalHTMLBlock,
@@ -40,40 +41,30 @@ function resetFormCodePreview () {
   hljs.highlightElement(codePreviewArea);
 }
 
-async function postFormDataToUrlAsJSON (url, formData) {
-  const plainData = Object.fromEntries(formData.entries());
-  const formDataJSONString = JSON.stringify(plainData);
-
+async function postFormDataToUrlAsJSON (endpoint, formDataObj) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
-    body: formDataJSONString
+    body: JSON.stringify(formDataObj)
   };
 
-  return await fetch(url, fetchOptions);
+  return await fetch(endpoint, fetchOptions);
 }
 
-async function formSubmitListener (event) {
+async function newCardFormSubmitListener (event) {
+  event.preventDefault();
   const submitButton = document.getElementById('newCardSubmit');
+  submitButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+  const formDataObj = Object.fromEntries(formData.entries());
+
   try {
-    event.preventDefault();
-
-    submitButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-
-    let apiPOSTUrl = '';
-    if (form.id === 'newCardForm') {
-      apiPOSTUrl = 'cards';
-    } else if (form.id === 'newCommentForm') {
-      apiPOSTUrl = 'comments';
-    }
-
-    const apiResponse = await postFormDataToUrlAsJSON(apiPOSTUrl, formData);
+    const apiResponse = await postFormDataToUrlAsJSON('cards', formDataObj);
     const apiResJSON = await apiResponse.json();
 
     const linkFormField = document.getElementById('newCardRedditUrl');
@@ -110,7 +101,38 @@ async function formSubmitListener (event) {
   }
 }
 
-document.getElementById('newCardForm').addEventListener('submit', formSubmitListener);
+document.getElementById('newCardForm').addEventListener('submit', newCardFormSubmitListener);
+
+async function newCommentFormSubmitListener (event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+
+  const parentId = Number(form.id.match(/\d+/g)[0]);
+  const postButton = document.getElementById(`commentPostButton${parentId}`);
+  postButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+  const formData = new FormData(form);
+  const formDataObj = Object.fromEntries(formData.entries());
+  formDataObj.parent = parentId;
+
+  try {
+    const apiResponse = await postFormDataToUrlAsJSON('comments', formDataObj);
+    const apiResponseJSON = await apiResponse.json();
+
+    const commentDisplayedCount = document.getElementById(`post${parentId}CommentCount`);
+    commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/> \d+/, '> ' + apiResponseJSON.numNewComments);
+    updateComments(parentId);
+    form.reset();
+  } catch (e) {
+    const alertDiv = document.getElementById(`commentAlert${parentId}`);
+    alertDiv.innerHTML = makeAlert(
+      'Comment post failed!',
+      'You might have lost connection to the server.'
+    );
+  } finally {
+    postButton.innerHTML = 'Post!';
+  }
+}
 
 /**
  * @param {string} string
@@ -134,7 +156,7 @@ const documentCards = document.getElementById('cards');
 const documentCardModals = document.getElementById('postModals');
 const sortSelector = document.getElementById('sortingOption');
 
-let cardArrayTemp = [];
+let cardArrayCache = [];
 
 async function getAllCards (sortBy) {
   documentCards.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4';
@@ -148,8 +170,7 @@ async function getAllCards (sortBy) {
       // convert to DateTime object so that times can be compared and sorted
       card.time = DateTime.fromISO(card.time);
     }
-    // sorts in descending order - recent to old; highest likes to lowest
-    cardArrayTemp = currentCardArray;
+    cardArrayCache = currentCardArray;
   } catch (e) {
     const alertDiv = document.getElementById('pageErrorAlert');
     alertDiv.innerHTML = makeAlert(
@@ -157,9 +178,10 @@ async function getAllCards (sortBy) {
       'You might have lost connection to the server. The cards shown may be outdated.'
     );
 
-    currentCardArray = cardArrayTemp;
+    currentCardArray = cardArrayCache;
   }
 
+  // sorts in descending order - recent to old; highest likes to lowest
   currentCardArray.sortBy = function (sortParameter) {
     function compare (a, b) {
       const left = a[sortParameter];
@@ -203,9 +225,8 @@ function insertCardsOnPage (cardArray) {
       const langUpper = firstLetterUpper(card.language);
 
       documentCards.innerHTML = makeCardHTMLBlock(
-        // todo: actually count comments for commentNum label
         card.title, langUpper, card.code, card.id, card.likes,
-        0, relativeTime, exactTime
+        card.comments.length, relativeTime, exactTime
       ) + documentCards.innerHTML;
 
       documentCardModals.innerHTML = makeCardModalHTMLBlock(
@@ -213,6 +234,12 @@ function insertCardsOnPage (cardArray) {
         card.redditData.score, card.redditData.author, card.redditData.numSubComments
       ) + documentCardModals.innerHTML;
     }
+
+    documentCards.querySelectorAll('button').forEach((el) => {
+      el.addEventListener('click', () => {
+        updateComments(el.getAttribute('data-bs-target').match(/\d+/)[0]);
+      });
+    });
   }
 }
 
@@ -220,10 +247,57 @@ function getAllCardsCallback (cardArray) {
   insertCardsOnPage(cardArray);
   highlightAllCode();
   resetFormCodePreview();
+  document.querySelectorAll('.comment-form').forEach(el => el.addEventListener('submit', newCommentFormSubmitListener));
 }
 
 function updateCards () {
   getAllCards(sortSelector.value).then((cardArray) => getAllCardsCallback(cardArray));
+}
+
+const commentCache = Object();
+
+async function getComments (cardId) {
+  try {
+    let apiResponse = await fetch(`cards/${cardId}`);
+    let apiResponseJSON = await apiResponse.json();
+    const reqComments = apiResponseJSON[0].comments;
+
+    if (reqComments.length) {
+      apiResponse = await fetch(`comments?ids=${reqComments.join()}`);
+      apiResponseJSON = await apiResponse.json();
+      commentCache[cardId] = apiResponseJSON;
+    } else {
+      commentCache[cardId] = [];
+    }
+  } catch (e) {
+    const alertDiv = document.getElementById(`commentAlert${cardId}`);
+    alertDiv.innerHTML = makeAlert(
+      'Comment loading failed!',
+      'You might have lost connection to the server. The comments shown may be outdated.'
+    );
+  }
+  return commentCache[cardId];
+}
+
+function updateComments (cardId) {
+  const commentsULEl = document.getElementById(`card${cardId}CommentsList`);
+  commentsULEl.innerHTML = `<div class="d-flex justify-content-center">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>`;
+
+  getComments(cardId).then((commentArray) => {
+    commentsULEl.innerHTML = '';
+    if (commentArray.length) {
+      for (const comment of commentArray) {
+        comment.time = DateTime.fromISO(comment.time);
+        commentsULEl.innerHTML += commentLiElement(comment.content, comment.time.toRelative());
+      }
+    } else {
+      commentsULEl.innerHTML += commentLiElement('No comments yet!', '');
+    }
+  });
 }
 
 sortSelector.addEventListener('change', updateCards);
