@@ -13,10 +13,10 @@ export function makeCardHTMLBlock (title, language, code, id, likes, commentCoun
     <div class="card-footer text-muted">
       <div class="d-flex justify-content-between">
         <div class="text-danger" id="card1Likes">
-          ${likes} <a href="#" class="text-danger like-button"><3</a> s
+          ${likes}&nbsp;<a href="#" class="text-danger like-button"><3</a> s
         </div>
         <div id="post${id}CommentCount">
-          <span class="material-icons align-middle md-24">forum</span> ${commentCount}
+          <span class="material-icons md-24 align-middle">forum</span>&nbsp;${commentCount}
         </div>
         <div class="text-start" title="${exactTime}">
           ${relativeTime}

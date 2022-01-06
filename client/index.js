@@ -120,7 +120,7 @@ async function newCommentFormSubmitListener (event) {
     const apiResponseJSON = await apiResponse.json();
 
     const commentDisplayedCount = document.getElementById(`post${parentId}CommentCount`);
-    commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/> \d+/, '> ' + apiResponseJSON.newTotalComments);
+    commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/;\d+/, `;${apiResponseJSON.newTotalComments}`);
     updateComments(parentId);
     form.reset();
   } catch (e) {
