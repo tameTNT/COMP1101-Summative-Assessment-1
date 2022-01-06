@@ -6,7 +6,7 @@
       "code": "import numpy as np\r\nfrom parse import findall\r\n\r\ninstr = open(0).read()\r\nP = np.zeros((9999,9999), bool)\r\n\r\nfor x,y in findall('{:d},{:d}', instr):\r\n    P[y,x] = True\r\n\r\nfor axis, a in findall('{:l}={:d}', instr):\r\n    if axis == 'x': P = P[:,:a] | P[:,2*a:a:-1]\r\n    if axis == 'y': P = P[:a,:] | P[2*a:a:-1,:]\r\n    print(P.sum())\r\n\r\nprint(np.array2string(P, separator='',\r\n    formatter = {'bool':{0:' ',1:'█'}.get}))",
       "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rf7onx/comment/hocl0cq",
       "id": 0,
-      "likes": 0,
+      "likes": 5,
       "time": "2022-01-06T17:03:18.412Z",
       "comments": [],
       "redditData": {
@@ -14,7 +14,64 @@
         "author": "4HbQ",
         "numSubComments": 1
       }
+    },
+    {
+      "title": "Sets have & operations?",
+      "language": "python",
+      "code": "s = 0\r\nfor x,y in [x.split('|') for x in open(0)]:  # split signal and output\r\n  l = {len(s): set(s) for s in x.split()}    # get number of segments\r\n\r\n  n = ''\r\n  for o in map(set, y.split()):              # loop over output digits\r\n    match len(o), len(o&l[4]), len(o&l[2]):  # mask with known digits\r\n      case 2,_,_: n += '1'\r\n      case 3,_,_: n += '7'\r\n      case 4,_,_: n += '4'\r\n      case 7,_,_: n += '8'\r\n      case 5,2,_: n += '2'\r\n      case 5,3,1: n += '5'\r\n      case 5,3,2: n += '3'\r\n      case 6,4,_: n += '9'\r\n      case 6,3,1: n += '6'\r\n      case 6,3,2: n += '0'\r\n  s += int(n)\r\n\r\nprint(s)",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnoyy04",
+      "id": 1,
+      "likes": 3,
+      "time": "2022-01-06T17:07:48.747Z",
+      "comments": [
+        0,
+        2
+      ],
+      "redditData": {
+        "score": 94,
+        "author": "4HbQ",
+        "numSubComments": 10
+      }
+    },
+    {
+      "title": "One day, I will understand Rust",
+      "language": "rust",
+      "code": "fn decode_segment(&self, s: &str) -> usize {\r\n    match (s.len(), self.common_with_one(s), self.common_with_four(s)) {\r\n        (2,2,2) => 1,\r\n        (5,1,2) => 2,\r\n        (5,2,3) => 3,\r\n        (4,2,4) => 4,\r\n        (5,1,3) => 5,\r\n        (6,1,3) => 6,\r\n        (3,2,2) => 7,\r\n        (7,2,4) => 8,\r\n        (6,2,4) => 9,\r\n        (6,2,3) => 0,\r\n        (_,_,_) => panic!()\r\n    }\r\n}",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnpgp65",
+      "id": 2,
+      "likes": 0,
+      "time": "2022-01-06T17:10:03.797Z",
+      "comments": [
+        1
+      ],
+      "redditData": {
+        "score": 18,
+        "author": "frankbsad",
+        "numSubComments": 2
+      }
     }
   ],
-  "comments": []
+  "comments": [
+    {
+      "content": "I had NO idea this was possible! 🤯",
+      "parent": 1,
+      "id": 0,
+      "time": "2022-01-06T17:08:05.720Z",
+      "lastEdited": "2022-01-06T17:08:17.708Z"
+    },
+    {
+      "content": "That day is not today though...",
+      "parent": 2,
+      "id": 1,
+      "time": "2022-01-06T17:10:34.120Z",
+      "lastEdited": null
+    },
+    {
+      "content": "We're offline? Clearly not anymore! 🎉",
+      "parent": 1,
+      "id": 2,
+      "time": "2022-01-06T17:12:33.297Z",
+      "lastEdited": "2022-01-06T17:12:51.549Z"
+    }
+  ]
 }
