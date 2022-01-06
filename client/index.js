@@ -177,7 +177,7 @@ async function getAllCards (sortBy) {
   } catch (e) {
     alertDiv.innerHTML = makeAlert(
       'Card update failed!',
-      'You might have lost connection to the server. The cards shown may be outdated.'
+      'You might have lost connection to the server. Any cards shown may be outdated.'
     );
 
     currentCardArray = cardArrayCache;
@@ -284,7 +284,7 @@ async function getComments (cardId) {
   } catch (e) {
     alertDiv.innerHTML = makeAlert(
       'Comment loading failed!',
-      'You might have lost connection to the server. The comments shown may be outdated.'
+      'You might have lost connection to the server. Any comments shown may be outdated.'
     );
   }
   return commentCache[cardId];
@@ -303,13 +303,62 @@ function updateComments (cardId) {
     if (commentArray.length > 0) {
       for (const comment of commentArray) {
         comment.time = DateTime.fromISO(comment.time);
-        commentsULEl.innerHTML += commentLiElement(comment.content, comment.time.toRelative());
+        commentsULEl.innerHTML += commentLiElement(comment.id, comment.content, comment.time.toRelative());
       }
+      commentsULEl.querySelectorAll('a').forEach((el) => {
+        el.addEventListener('click', () => editCommentAction(el), { once: true });
+      });
     } else {
-      commentsULEl.innerHTML += commentLiElement('No comments yet!', '');
+      commentsULEl.innerHTML += commentLiElement(null, 'No comments yet!', null);
     }
   });
 }
 
 sortSelector.addEventListener('change', updateCards);
 updateCards();
+
+function editCommentAction (button) {
+  const commentId = button.id.match(/\d+/)[0];
+  const cardId = button.closest('ul').id.match(/\d+/)[0];
+  const contentDiv = button.closest('.list-group-item').querySelector('.comment-content');
+  const oldContentCache = contentDiv.innerText;
+  contentDiv.contentEditable = 'true';
+  contentDiv.focus();
+  button.innerHTML = button.innerHTML.replace(/edit/, 'done').replace(/secondary/, 'success');
+  button.addEventListener('click', () => {
+    contentDiv.contentEditable = 'false';
+    button.innerHTML = button.innerHTML.replace(/done/, 'edit').replace(/success/, 'secondary');
+    contentDiv.innerText = contentDiv.innerText.replace('\n', ' ');
+
+    putComment(commentId, contentDiv.innerText).then((status) => {
+      if (status === 'FAIL') {
+        const alertDiv = document.getElementById(`commentAlert${cardId}`);
+        alertDiv.innerHTML = makeAlert(
+          'Comment edit failed!',
+          'You might have lost connection to the server. Try editing the comment again later.'
+        );
+        contentDiv.textContent = oldContentCache;
+      }
+
+      button.addEventListener('click', () => editCommentAction(button), { once: true });
+    });
+  }, { once: true });
+}
+
+async function putComment (commentId, newContent) {
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({ content: newContent })
+  };
+
+  try {
+    await fetch(`comments/${commentId}`, fetchOptions);
+    return 'OK';
+  } catch (e) {
+    return 'FAIL';
+  }
+}

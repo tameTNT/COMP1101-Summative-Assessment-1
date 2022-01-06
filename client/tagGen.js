@@ -89,18 +89,25 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
 </div>`;
 }
 
-export function commentLiElement (content, relativeTime) {
-  return `
+export function commentLiElement (id, content, relativeTime) {
+  if (relativeTime) {
+    return `
 <li class="list-group-item">
-  <div class="d-flex justify-content-between">
-    <div>
+  <div class="d-flex">
+    <div class="me-auto comment-content">
       ${content}
     </div>
-    <div class="text-muted">
+    <div>
+      <a href="#" id="editComment-${id}"><span class="material-icons md-18 align-middle link-secondary">edit</span></a>
+    </div>
+    <div class="text-muted ms-1">
       ${relativeTime}
     </div>
   </div>
 </li>`;
+  } else {
+    return `<li class="list-group-item">${content}</li>`;
+  }
 }
 
 export function placeholderCard () {
