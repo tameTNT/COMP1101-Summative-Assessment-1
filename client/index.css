@@ -23,6 +23,7 @@
 .code-text {
   font-family: 'Roboto Mono', monospace;
   max-height: 300px;
+  overflow: auto;
 }
 
 .code-snippet {

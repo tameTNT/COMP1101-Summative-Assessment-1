@@ -1,4 +1,20 @@
 {
-  "cards": [],
+  "cards": [
+    {
+      "title": "Cool Numpy ndArray Manipulation",
+      "language": "python",
+      "code": "import numpy as np\r\nfrom parse import findall\r\n\r\ninstr = open(0).read()\r\nP = np.zeros((9999,9999), bool)\r\n\r\nfor x,y in findall('{:d},{:d}', instr):\r\n    P[y,x] = True\r\n\r\nfor axis, a in findall('{:l}={:d}', instr):\r\n    if axis == 'x': P = P[:,:a] | P[:,2*a:a:-1]\r\n    if axis == 'y': P = P[:a,:] | P[2*a:a:-1,:]\r\n    print(P.sum())\r\n\r\nprint(np.array2string(P, separator='',\r\n    formatter = {'bool':{0:' ',1:'█'}.get}))",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rf7onx/comment/hocl0cq",
+      "id": 0,
+      "likes": 0,
+      "time": "2022-01-06T17:03:18.412Z",
+      "comments": [],
+      "redditData": {
+        "score": 13,
+        "author": "4HbQ",
+        "numSubComments": 1
+      }
+    }
+  ],
   "comments": []
 }

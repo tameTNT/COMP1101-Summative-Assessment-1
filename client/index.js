@@ -35,7 +35,7 @@ function updateCodeInputArea () {
   if (!selectedLang) { // if default "" value selected
     selectedLang = 'plaintext';
   }
-  codePreviewArea.className = `code-text language-${selectedLang} p-2`;
+  codePreviewArea.className = `code-text language-${selectedLang} p-2 rounded-3`;
   codePreviewArea.innerHTML = codeInputArea.value;
   hljs.highlightElement(codePreviewArea);
 }
@@ -44,7 +44,7 @@ codeInputArea.addEventListener('input', updateCodeInputArea);
 codePreviewLangSelect.addEventListener('change', updateCodeInputArea);
 
 function resetFormCodePreview () {
-  codePreviewArea.className = 'code-text language-plaintext p-2';
+  codePreviewArea.className = 'code-text language-plaintext p-2 rounded-3';
   codePreviewArea.innerHTML = "print('Hello World')";
   hljs.highlightElement(codePreviewArea);
 }
