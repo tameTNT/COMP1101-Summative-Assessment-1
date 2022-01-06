@@ -59,7 +59,7 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
                   <span class="material-icons md-24 align-middle">account_circle</span>
                   <span class="align-middle">${rUser}</span>
                 </div>
-                <div class="col col-sm-auto" title="Reddit comment depth">
+                <div class="col col-sm-auto" title="Reddit comments">
                   <span class="material-icons md-24 align-middle">analytics</span>
                   <span class="align-middle">${rComments}</span>
                 </div>
