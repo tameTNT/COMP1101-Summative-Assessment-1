@@ -15,6 +15,11 @@
   font-size: 48px;
 }
 
+.comment-scroll {
+  overflow: auto;
+  max-height: 200px;
+}
+
 .code-text {
   font-family: 'Roboto Mono', monospace;
   max-height: 300px;

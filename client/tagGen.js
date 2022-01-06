@@ -75,14 +75,13 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
         <form class="comment-form" id="commentForm${id}">
           <div class="input-group mt-2 mb-2">
             <span class="input-group-text">Comment:</span>
-            <textarea class="form-control" aria-label="Comment Text" name="content"></textarea>
+            <textarea class="form-control" aria-label="Comment Text" name="content" required></textarea>
             <button class="btn btn-outline-secondary" type="submit" id="commentPostButton${id}">Post!</button>
           </div>
           <div id="commentAlert${id}"></div>
         </form>
-        <ul class="list-group list-group-flush" id="card${id}CommentsList">
+        <ul class="list-group list-group-flush comment-scroll" id="card${id}CommentsList">
           <!-- todo: shorten comments via JS adapting to device width -->
-          <!-- todo: make comments separate scrollable -->
         </ul>
       </div>
     </div>
