@@ -82,7 +82,10 @@ app.route('/cards(/:id(\\d+))?')
 
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
             res.status(201);
-            res.json({ message: 'Added new card successfully.' });
+            res.json({
+              message: 'Added new card successfully.',
+              id: newCard.id
+            });
           });
         }
       }
@@ -153,7 +156,8 @@ app.route('/comments(/:id(\\d+))?')
           res.status(201);
           res.json({
             message: 'Added new comment successfully.',
-            numNewComments: parentCard.comments.length
+            numNewComments: parentCard.comments.length,
+            id: newComment.id
           });
         });
       }
