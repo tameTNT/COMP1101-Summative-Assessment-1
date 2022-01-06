@@ -24,7 +24,7 @@ app.route('/cards(/:id(\\d+))?')
 
         const reqCards = helpers.handleIdUrl(jsonData.cards, reqParamId, reqQueryIds);
 
-        if (reqCards.length === 0) {
+        if (reqCards.length === 0 && reqParamId !== undefined) {
           res.status(404);
           res.json({
             error: 'cards-not-found',
@@ -118,7 +118,7 @@ app.route('/comments(/:id(\\d+))?')
 
         const reqComments = helpers.handleIdUrl(jsonData.comments, reqParamId, reqQueryIds);
 
-        if (reqComments.length === 0) {
+        if (reqComments.length === 0 && reqParamId !== undefined) {
           res.status(404);
           res.json({
             error: 'comments-not-found',

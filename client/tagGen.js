@@ -162,7 +162,7 @@ export function noCardsCard () {
   <div class="card h-100">
     <div class="card-body">
       <h5 class="card-title">There are no cards to display :(</h5>
-      <p class="card-text">Why not add one using the new post button below?</p>
+      <p class="card-text">Why not try adding one using the new post button below?</p>
     </div>
   </div>
 </div>`;
