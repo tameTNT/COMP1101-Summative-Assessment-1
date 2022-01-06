@@ -43,7 +43,6 @@ app.route('/cards(/:id(\\d+))?')
           jsonData.cards = jsonData.cards.concat(refreshedCards); // reinsert new data cards
 
           const jsonString = JSON.stringify(jsonData, null, 2);
-
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
             res.status(200);
             if (reqParamId !== undefined) {
@@ -61,9 +60,9 @@ app.route('/cards(/:id(\\d+))?')
       if (err) {
         console.error(err);
       } else {
-        const jsonData = JSON.parse(fileData); // includes fields: title, language, code, redditUrl
+        const jsonData = JSON.parse(fileData);
 
-        let newCard = req.body;
+        let newCard = req.body; // includes fields: title, language, code, redditUrl
 
         newCard.id = helpers.getNewValidId(jsonData.cards);
         newCard.likes = 0;
@@ -146,9 +145,9 @@ app.route('/comments(/:id(\\d+))?')
       if (err) {
         console.error(err);
       } else {
-        const jsonData = JSON.parse(fileData); // includes fields: content, parent
+        const jsonData = JSON.parse(fileData);
 
-        const newComment = req.body;
+        const newComment = req.body; // includes fields: content, parent
 
         newComment.id = helpers.getNewValidId(jsonData.comments);
         newComment.time = DateTime.now().toUTC();
@@ -158,8 +157,8 @@ app.route('/comments(/:id(\\d+))?')
         parentCard.comments.push(newComment.id);
 
         jsonData.comments.push(newComment);
-        const jsonString = JSON.stringify(jsonData, null, 2);
 
+        const jsonString = JSON.stringify(jsonData, null, 2);
         fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
           res.status(201);
           res.json({
@@ -167,6 +166,27 @@ app.route('/comments(/:id(\\d+))?')
             newTotalComments: parentCard.comments.length,
             id: newComment.id
           });
+        });
+      }
+    });
+  })
+  .put((req, res) => {
+    fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
+      if (err) {
+        console.error(err);
+      } else {
+        const jsonData = JSON.parse(fileData);
+
+        const reqParamId = req.params.id;
+
+        const newCommentContent = req.body.content; // includes fields: content
+
+        const targetComment = helpers.handleIdUrl(jsonData.comments, reqParamId, '')[0];
+        targetComment.content = newCommentContent;
+
+        const jsonString = JSON.stringify(jsonData, null, 2);
+        fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
+          res.sendStatus(204);
         });
       }
     });
