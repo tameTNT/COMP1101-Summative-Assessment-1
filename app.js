@@ -31,24 +31,19 @@ app.route('/cards(/:id(\\d+))?')
             message: 'No card/s with that/those id/s were found in the database.'
           });
         } else {
-          const refreshedCards = [];
           // update cards' reddit data while GETting
           for (const card of reqCards) {
             const redditData = await helpers.getRedditData(card.redditUrl);
-            refreshedCards.push(await helpers.updateCardRedditData(card, redditData));
+            await helpers.updateCardRedditData(card, redditData);
           }
-
-          // todo: possible to do without removing and reinserting cards - i.e. just be editing objs instead?
-          jsonData.cards = jsonData.cards.filter(card => !reqCards.includes(card)); // remove old cards
-          jsonData.cards = jsonData.cards.concat(refreshedCards); // reinsert new data cards
 
           const jsonString = JSON.stringify(jsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
             res.status(200);
             if (reqParamId !== undefined) {
-              res.send(refreshedCards[0]);
+              res.send(reqCards[0]);
             } else {
-              res.send(refreshedCards);
+              res.send(reqCards);
             }
           });
         }
@@ -62,7 +57,7 @@ app.route('/cards(/:id(\\d+))?')
       } else {
         const jsonData = JSON.parse(fileData);
 
-        let newCard = req.body; // includes fields: title, language, code, redditUrl
+        const newCard = req.body; // includes fields: title, language, code, redditUrl
 
         newCard.id = helpers.getNewValidId(jsonData.cards);
         newCard.likes = 0;
@@ -79,10 +74,10 @@ app.route('/cards(/:id(\\d+))?')
             message: "The provided Reddit link couldn't be resolved. Please check the link is correct."
           });
         } else {
-          newCard = await helpers.updateCardRedditData(newCard, redditData);
+          await helpers.updateCardRedditData(newCard, redditData);
           jsonData.cards.push(newCard);
-          const jsonString = JSON.stringify(jsonData, null, 2);
 
+          const jsonString = JSON.stringify(jsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
             res.status(201);
             res.json({
