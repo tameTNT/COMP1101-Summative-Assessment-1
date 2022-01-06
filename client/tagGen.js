@@ -43,8 +43,11 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
         <div class="container mt-2 mb-2 ms-0">
           <div class="row align-items-center">
             <div class="col-sm-auto">
-              <a href="${redditLink}" class="btn btn-outline-primary"
-                 title="Links to source Reddit post">Reddit link</a>
+              <a href="${redditLink}"  target="_blank" class="btn btn-outline-primary"
+                 title="View original Reddit source">
+                <span class="material-icons md-18 align-middle">open_in_new</span>
+                Reddit
+              </a>
             </div>
             <div class="col-sm-8 mt-1 mb-1">
               <div class="row reddit-info-row ">
