@@ -184,8 +184,15 @@ async function getAllCards (sortBy) {
   // sorts in descending order - recent to old; highest likes to lowest
   currentCardArray.sortBy = function (sortParameter) {
     function compare (a, b) {
-      const left = a[sortParameter];
-      const right = b[sortParameter];
+      let left;
+      let right;
+      if (sortParameter === 'comments') {
+        left = a[sortParameter].length;
+        right = b[sortParameter].length;
+      } else {
+        left = a[sortParameter];
+        right = b[sortParameter];
+      }
 
       if (left < right) {
         return -1;
