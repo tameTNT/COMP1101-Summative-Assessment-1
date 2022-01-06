@@ -215,10 +215,7 @@ function insertCardsOnPage (cardArray) {
   documentCards.innerHTML = '';
   documentCardModals.innerHTML = '';
 
-  if (cardArray.length === 0) {
-    documentCards.innerHTML = noCardsCard();
-    documentCards.className = 'row row-cols-1';
-  } else {
+  if (cardArray.length > 0) {
     for (const card of cardArray) {
       const relativeTime = card.time.toRelative();
       // noinspection JSCheckFunctionSignatures
@@ -249,6 +246,9 @@ function insertCardsOnPage (cardArray) {
         updateComments(el.getAttribute('data-bs-target').match(/\d+/)[0]);
       });
     });
+  } else {
+    documentCards.innerHTML = noCardsCard();
+    documentCards.className = 'row row-cols-1';
   }
 }
 
@@ -274,7 +274,7 @@ async function getComments (cardId) {
     let apiResponseJSON = await apiResponse.json();
     const reqComments = apiResponseJSON.comments;
 
-    if (reqComments.length) {
+    if (reqComments.length > 0) {
       apiResponse = await fetch(`comments?ids=${reqComments.join()}`);
       apiResponseJSON = await apiResponse.json();
       commentCache[cardId] = apiResponseJSON;
@@ -300,7 +300,7 @@ function updateComments (cardId) {
 
   getComments(cardId).then((commentArray) => {
     commentsULEl.innerHTML = '';
-    if (commentArray.length) {
+    if (commentArray.length > 0) {
       for (const comment of commentArray) {
         comment.time = DateTime.fromISO(comment.time);
         commentsULEl.innerHTML += commentLiElement(comment.content, comment.time.toRelative());
