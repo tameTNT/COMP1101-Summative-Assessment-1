@@ -27,7 +27,7 @@ app.route('/cards(/:id(\\d+))?')
         if (reqCards.length === 0) {
           res.status(404);
           res.json({
-            error: 'card-not-found',
+            error: 'cards-not-found',
             message: 'No card/s with that/those id/s were found in the database.'
           });
         } else {
@@ -46,7 +46,11 @@ app.route('/cards(/:id(\\d+))?')
 
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
             res.status(200);
-            res.send(refreshedCards);
+            if (reqParamId !== undefined) {
+              res.send(refreshedCards[0]);
+            } else {
+              res.send(refreshedCards);
+            }
           });
         }
       }
@@ -101,7 +105,7 @@ app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
   } else {
     res.status(404);
     res.json({
-      error: 'card-not-found',
+      error: 'cards-not-found',
       message: `No card matching id ${reqParamId} was found to get Reddit data for.`
     });
   }
@@ -123,12 +127,16 @@ app.route('/comments(/:id(\\d+))?')
         if (reqComments.length === 0) {
           res.status(404);
           res.json({
-            error: 'comment-not-found',
+            error: 'comments-not-found',
             message: 'No comment/s with that/those id/s were found in the database.'
           });
         } else {
           res.status(200);
-          res.send(reqComments);
+          if (reqParamId !== undefined) {
+            res.send(reqComments[0]);
+          } else {
+            res.send(reqComments);
+          }
         }
       }
     });
@@ -156,7 +164,7 @@ app.route('/comments(/:id(\\d+))?')
           res.status(201);
           res.json({
             message: 'Added new comment successfully.',
-            numNewComments: parentCard.comments.length,
+            newTotalComments: parentCard.comments.length,
             id: newComment.id
           });
         });

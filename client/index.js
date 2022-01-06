@@ -120,7 +120,7 @@ async function newCommentFormSubmitListener (event) {
     const apiResponseJSON = await apiResponse.json();
 
     const commentDisplayedCount = document.getElementById(`post${parentId}CommentCount`);
-    commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/> \d+/, '> ' + apiResponseJSON.numNewComments);
+    commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/> \d+/, '> ' + apiResponseJSON.newTotalComments);
     updateComments(parentId);
     form.reset();
   } catch (e) {
@@ -267,7 +267,7 @@ async function getComments (cardId) {
   try {
     let apiResponse = await fetch(`cards/${cardId}`);
     let apiResponseJSON = await apiResponse.json();
-    const reqComments = apiResponseJSON[0].comments;
+    const reqComments = apiResponseJSON.comments;
 
     if (reqComments.length) {
       apiResponse = await fetch(`comments?ids=${reqComments.join()}`);
