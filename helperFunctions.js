@@ -1,14 +1,5 @@
 const fetch = require('node-fetch');
 
-module.exports.isEmpty = function (obj) {
-  // https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
-  // because Object.keys(new Date()).length === 0;
-  // we have to do some additional check
-  return obj && // 👈 null and undefined check
-    Object.keys(obj).length === 0 &&
-    Object.getPrototypeOf(obj) === Object.prototype;
-};
-
 /**
  * @param {Object[]} array
  * @param {Number[]} ids
@@ -58,7 +49,7 @@ module.exports.getRedditData = async function (redditUrl) {
   }
 };
 
-module.exports.updateCardRedditData = async function (cardObj, newRedditData) {
+module.exports.updateCardRedditData = function (cardObj, newRedditData) {
   cardObj.redditData = (({ score, author }) => ({
     score,
     author

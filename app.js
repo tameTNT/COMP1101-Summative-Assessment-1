@@ -10,16 +10,22 @@ const helpers = require('./helperFunctions.js');
 app.use(express.static('client'));
 app.use(express.json());
 
+/**
+ * @param req {express.Request}
+ * @param res {express.Response}
+ * @param req.params.id {String | undefined}
+ * @param req.query.ids {String | undefined}
+ */
 app.route('/cards(/:id(\\d+))?')
   .get((req, res) => {
     const reqParamId = req.params.id;
-    // noinspection JSUnresolvedVariable
     const reqQueryIds = req.query.ids;
 
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
         console.error(err);
       } else {
+        /** @type {{cards: Object[], comments: Object[]}} jsonData */
         const jsonData = JSON.parse(fileData);
 
         const reqCards = helpers.handleIdUrl(jsonData.cards, reqParamId, reqQueryIds);
@@ -34,7 +40,7 @@ app.route('/cards(/:id(\\d+))?')
           // update cards' reddit data while GETting
           for (const card of reqCards) {
             const redditData = await helpers.getRedditData(card.redditUrl);
-            await helpers.updateCardRedditData(card, redditData);
+            helpers.updateCardRedditData(card, redditData);
           }
 
           const jsonString = JSON.stringify(jsonData, null, 2);
@@ -74,7 +80,7 @@ app.route('/cards(/:id(\\d+))?')
             message: "The provided Reddit link couldn't be resolved. Please check the link is correct."
           });
         } else {
-          await helpers.updateCardRedditData(newCard, redditData);
+          helpers.updateCardRedditData(newCard, redditData);
           jsonData.cards.push(newCard);
 
           const jsonString = JSON.stringify(jsonData, null, 2);
@@ -108,7 +114,6 @@ app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
 app.route('/comments(/:id(\\d+))?')
   .get((req, res) => {
     const reqParamId = req.params.id;
-    // noinspection JSUnresolvedVariable
     const reqQueryIds = req.query.ids;
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
