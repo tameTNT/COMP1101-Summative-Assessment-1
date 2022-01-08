@@ -33,7 +33,7 @@ app.route('/cards(/:id(\\d+))?')
         if (reqCards.length === 0 && reqParamId !== undefined) {
           res.status(404);
           res.json({
-            error: 'cards-not-found',
+            error: 'card(s)-not-found',
             message: 'No card/s with that/those id/s were found in the database.'
           });
         } else {
@@ -105,7 +105,7 @@ app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
   } else {
     res.status(404);
     res.json({
-      error: 'cards-not-found',
+      error: 'card(s)-not-found',
       message: `No card matching id ${reqParamId} was found to get Reddit data for.`
     });
   }

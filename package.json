@@ -6,7 +6,7 @@
   "scripts": {
     "run": "nodemon server.js --ext js",
     "pretest": "eslint ./ --fix",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "url": "https://github.com/tameTNT/COMP1101-Summative-Assessment-1"
@@ -20,7 +20,8 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
-    "jest": "^27.4.4",
+    "jest": "^27.4.7",
+    "jest-matcher-deep-close-to": "^3.0.2",
     "nodemon": "^2.0.15",
     "supertest": "^6.1.6"
   },
