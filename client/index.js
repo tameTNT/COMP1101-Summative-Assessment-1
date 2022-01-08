@@ -179,6 +179,7 @@ async function getAllCards (sortBy) {
     currentCardArray = await apiResponse.json();
     for (const card of currentCardArray) {
       // convert to DateTime object so that times can be compared and sorted
+      /** @type {DateTime} */
       card.time = DateTime.fromISO(card.time);
     }
     cardArrayCache = currentCardArray;
@@ -226,7 +227,6 @@ function insertCardsOnPage (cardArray) {
   if (cardArray.length > 0) {
     for (const card of cardArray) {
       const relativeTime = card.time.toRelative();
-      // noinspection JSCheckFunctionSignatures
       const exactTime = card.time.toLocaleString(TIMESTRINGFORMAT);
 
       const langUpper = firstLetterUpper(card.language);
@@ -303,15 +303,15 @@ function updateComments (cardId) {
     commentsULEl.innerHTML = '';
     if (commentArray.length > 0) {
       for (const comment of commentArray) {
+        /** @type {DateTime} */
         comment.time = DateTime.fromISO(comment.time);
 
         let timeDetailString = '';
         if (comment.lastEdited) {
+          /** @type {DateTime} */
           comment.lastEdited = DateTime.fromISO(comment.lastEdited);
-          // noinspection JSCheckFunctionSignatures
           timeDetailString = `Edited ${comment.lastEdited.toLocaleString(TIMESTRINGFORMAT)}`;
         } else {
-          // noinspection JSCheckFunctionSignatures
           timeDetailString = comment.time.toLocaleString(TIMESTRINGFORMAT);
         }
 
