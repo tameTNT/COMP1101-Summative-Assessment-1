@@ -1,0 +1,77 @@
+{
+  "cards": [
+    {
+      "title": "Title 1",
+      "language": "Language 1",
+      "code": "Code sample 1",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rf7onx/comment/hocl0cq",
+      "id": 0,
+      "likes": 1,
+      "time": "2022-01-01T17:03:18.412Z",
+      "comments": [],
+      "redditData": {
+        "score": 13,
+        "author": "4HbQ",
+        "numSubComments": 1
+      }
+    },
+    {
+      "title": "Title 1",
+      "language": "Language 1",
+      "code": "Code sample 1",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnpgp65",
+      "id": 1,
+      "likes": 2,
+      "time": "2022-01-02T17:10:03.797Z",
+      "comments": [
+        1
+      ],
+      "redditData": {
+        "score": 19,
+        "author": "frankbsad",
+        "numSubComments": 2
+      }
+    },
+    {
+      "title": "Title 2",
+      "language": "Language 2",
+      "code": "Code sample 2",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnoyy04",
+      "id": 2,
+      "likes": 3,
+      "time": "2022-01-03T17:07:48.747Z",
+      "comments": [
+        0,
+        2
+      ],
+      "redditData": {
+        "score": 94,
+        "author": "4HbQ",
+        "numSubComments": 10
+      }
+    }
+  ],
+  "comments": [
+    {
+      "content": "Comment 0",
+      "parent": 2,
+      "id": 0,
+      "time": "2022-01-06T17:08:05.720Z",
+      "lastEdited": "2022-01-06T17:08:17.708Z"
+    },
+    {
+      "content": "Comment 1",
+      "parent": 1,
+      "id": 1,
+      "time": "2022-01-06T17:10:34.120Z",
+      "lastEdited": null
+    },
+    {
+      "content": "Comment 2",
+      "parent": 2,
+      "id": 2,
+      "time": "2022-01-06T17:12:33.297Z",
+      "lastEdited": "2022-01-06T17:12:51.549Z"
+    }
+  ]
+}
