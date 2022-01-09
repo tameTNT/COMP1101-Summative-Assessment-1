@@ -192,17 +192,24 @@ app.route('/comments(/:id(\\d+))?')
         const jsonData = JSON.parse(fileData);
 
         const reqParamId = req.params.id;
+        if (!reqParamId) {
+          res.status(400);
+          res.json({
+            error: 'no-comment-to-put',
+            message: 'No comment id was provided.'
+          });
+        } else {
+          const newCommentContent = req.body.content; // includes fields: content
 
-        const newCommentContent = req.body.content; // includes fields: content
+          const targetComment = helpers.handleIdUrl(jsonData.comments, reqParamId, '')[0];
+          targetComment.content = newCommentContent;
+          targetComment.lastEdited = DateTime.now().toUTC();
 
-        const targetComment = helpers.handleIdUrl(jsonData.comments, reqParamId, '')[0];
-        targetComment.content = newCommentContent;
-        targetComment.lastEdited = DateTime.now().toUTC();
-
-        const jsonString = JSON.stringify(jsonData, null, 2);
-        fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-          res.sendStatus(204);
-        });
+          const jsonString = JSON.stringify(jsonData, null, 2);
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
+            res.sendStatus(204);
+          });
+        }
       }
     });
   });
