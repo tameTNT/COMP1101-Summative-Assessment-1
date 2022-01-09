@@ -7,6 +7,8 @@ const app = express();
 
 const helpers = require('./helperFunctions.js');
 
+const FILE_ERROR_MESSAGE = 'An internal server error occurred within the API while accessing the .json database file. Please try again later.';
+
 app.use(express.static('client'));
 app.use(express.json());
 
@@ -23,7 +25,12 @@ app.route('/cards(/:id(\\d+))?')
 
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
-        console.error(err);
+        console.log(err);
+        res.status(500);
+        res.json({
+          error: 'database-read-error',
+          message: FILE_ERROR_MESSAGE
+        });
       } else {
         /** @type {{cards: Object[], comments: Object[]}} jsonData */
         const jsonData = JSON.parse(fileData);
@@ -44,12 +51,21 @@ app.route('/cards(/:id(\\d+))?')
           }
 
           const jsonString = JSON.stringify(jsonData, null, 2);
-          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-            res.status(200);
-            if (reqParamId !== undefined) {
-              res.send(reqCards[0]);
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
+            if (err) {
+              console.log(err);
+              res.status(500);
+              res.json({
+                error: 'database-write-error',
+                message: FILE_ERROR_MESSAGE
+              });
             } else {
-              res.send(reqCards);
+              res.status(200);
+              if (reqParamId !== undefined) {
+                res.send(reqCards[0]);
+              } else {
+                res.send(reqCards);
+              }
             }
           });
         }
@@ -59,7 +75,12 @@ app.route('/cards(/:id(\\d+))?')
   .post((req, res) => {
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
-        console.error(err);
+        console.log(err);
+        res.status(500);
+        res.json({
+          error: 'database-read-error',
+          message: FILE_ERROR_MESSAGE
+        });
       } else {
         const jsonData = JSON.parse(fileData);
 
@@ -90,12 +111,21 @@ app.route('/cards(/:id(\\d+))?')
           jsonData.cards.push(newCard);
 
           const jsonString = JSON.stringify(jsonData, null, 2);
-          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-            res.status(201);
-            res.json({
-              message: 'Added new card successfully.',
-              id: newCard.id
-            });
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
+            if (err) {
+              console.log(err);
+              res.status(500);
+              res.json({
+                error: 'database-write-error',
+                message: FILE_ERROR_MESSAGE
+              });
+            } else {
+              res.status(201);
+              res.json({
+                message: 'Added new card successfully.',
+                id: newCard.id
+              });
+            }
           });
         }
       }
@@ -123,7 +153,12 @@ app.route('/comments(/:id(\\d+))?')
     const reqQueryIds = req.query.ids;
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
-        console.error(err);
+        console.log(err);
+        res.status(500);
+        res.json({
+          error: 'database-read-error',
+          message: FILE_ERROR_MESSAGE
+        });
       } else {
         const jsonData = JSON.parse(fileData);
 
@@ -149,7 +184,12 @@ app.route('/comments(/:id(\\d+))?')
   .post((req, res) => {
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
-        console.error(err);
+        console.log(err);
+        res.status(500);
+        res.json({
+          error: 'database-read-error',
+          message: FILE_ERROR_MESSAGE
+        });
       } else {
         const jsonData = JSON.parse(fileData);
 
@@ -172,13 +212,22 @@ app.route('/comments(/:id(\\d+))?')
 
           jsonData.comments.push(newComment);
           const jsonString = JSON.stringify(jsonData, null, 2);
-          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-            res.status(201);
-            res.json({
-              message: 'Added new comment successfully.',
-              newTotalComments: parentCard.comments.length,
-              id: newComment.id
-            });
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
+            if (err) {
+              console.log(err);
+              res.status(500);
+              res.json({
+                error: 'database-write-error',
+                message: FILE_ERROR_MESSAGE
+              });
+            } else {
+              res.status(201);
+              res.json({
+                message: 'Added new comment successfully.',
+                newTotalComments: parentCard.comments.length,
+                id: newComment.id
+              });
+            }
           });
         }
       }
@@ -187,7 +236,12 @@ app.route('/comments(/:id(\\d+))?')
   .put((req, res) => {
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
-        console.error(err);
+        console.log(err);
+        res.status(500);
+        res.json({
+          error: 'database-read-error',
+          message: FILE_ERROR_MESSAGE
+        });
       } else {
         const jsonData = JSON.parse(fileData);
 
@@ -206,8 +260,17 @@ app.route('/comments(/:id(\\d+))?')
           targetComment.lastEdited = DateTime.now().toUTC();
 
           const jsonString = JSON.stringify(jsonData, null, 2);
-          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-            res.sendStatus(204);
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
+            if (err) {
+              console.log(err);
+              res.status(500);
+              res.json({
+                error: 'database-write-error',
+                message: FILE_ERROR_MESSAGE
+              });
+            } else {
+              res.sendStatus(204);
+            }
           });
         }
       }
