@@ -70,9 +70,15 @@ app.route('/cards(/:id(\\d+))?')
         newCard.time = DateTime.now().toUTC();
         newCard.comments = [];
 
-        const urlRegexp = /https:\/\/www.reddit.com\/r\/adventofcode\/comments\/(\w*)\/comment\/(\w*)/;
-        newCard.redditUrl = newCard.redditUrl.match(urlRegexp)[0]; // first element of match array is whole url that matches regexp
-        const redditData = await helpers.getRedditData(newCard.redditUrl);
+        const urlRegexp = /https:\/\/www.reddit.com\/r\/adventofcode\/comments\/\w+\/comment\/\w+/;
+        const regExpMatch = newCard.redditUrl.match(urlRegexp);
+
+        let redditData;
+        if (regExpMatch) {
+          newCard.redditUrl = regExpMatch[0]; // first element of match array is whole url that matches regexp
+          redditData = await helpers.getRedditData(newCard.redditUrl);
+        }
+
         if (!redditData) {
           res.status(422);
           res.json({
