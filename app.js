@@ -126,7 +126,7 @@ app.route('/comments(/:id(\\d+))?')
         if (reqComments.length === 0 && reqParamId !== undefined) {
           res.status(404);
           res.json({
-            error: 'comments-not-found',
+            error: 'comment(s)-not-found',
             message: 'No comment/s with that/those id/s were found in the database.'
           });
         } else {
