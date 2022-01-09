@@ -96,8 +96,101 @@ describe('Test GET methods', () => {
 });
 
 describe('Test POST & PUT methods', () => {
-  // todo: test /cards POST method (test with invalid reddit link)
-  // todo: test /comments POST & PUT methods
+  describe('Test /cards endpoints', () => {
+    test('POST /cards succeeds and adds new card to database', async () => {
+      const postBody = {
+        title: 'Test Title',
+        language: 'Test Language',
+        code: 'Test Code',
+        redditUrl: 'https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/ggyvnnj/?utm_source=share&utm_medium=web2x&context=3'
+      };
+      const response = await request(app).post('/cards').send(postBody);
+      expect(response.status).toBe(201);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.message).toBe('Added new card successfully.');
+      expect(jsonResponse.id).toBe(3);
+      expect(getDbData().cards.at(-1).title).toBe('Test Title');
+    });
+
+    test('POST /cards returns status 422 when Reddit link invalid by RegExp', async () => {
+      const postBody = {
+        title: 'Test Title',
+        language: 'Test Language',
+        code: 'Test Code',
+        redditUrl: 'https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/'
+      };
+      const response = await request(app).post('/cards').send(postBody);
+      expect(response.status).toBe(422);
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('reddit-link-failed');
+    });
+
+    test('POST /cards returns status 422 when Reddit link invalid by non-existence', async () => {
+      const postBody = {
+        title: 'Test Title',
+        language: 'Test Language',
+        code: 'Test Code',
+        redditUrl: 'https://www.reddit.com/r/adventofcode/comments/kjtg7y/comment/FFF'
+      };
+      const response = await request(app).post('/cards').send(postBody);
+      expect(response.status).toBe(422);
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('reddit-link-failed');
+    });
+  });
+
+  describe('Test /comments endpoints', () => {
+    test('POST /comments succeeds, adds new comment to database and updates parent card', async () => {
+      const postBody = {
+        content: 'Test Content',
+        parent: 1
+      };
+      const response = await request(app).post('/comments').send(postBody);
+      expect(response.status).toBe(201);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.message).toBe('Added new comment successfully.');
+      expect(jsonResponse.id).toBe(3);
+
+      const dbData = getDbData();
+      expect(jsonResponse.newTotalComments).toBe(dbData.cards.at(1).comments.length);
+      expect(dbData.comments.at(-1).content).toBe('Test Content');
+    });
+
+    test('POST /comments returns status 404 with non-existent parent id', async () => {
+      const postBody = {
+        content: 'Test Content',
+        parent: 10
+      };
+      const response = await request(app).post('/comments').send(postBody);
+      expect(response.status).toBe(404);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('parent-card-not-found');
+    });
+
+    test("PUT /comments/1 succeeds and updates comment's content", async () => {
+      const putBody = {
+        content: 'New Content!'
+      };
+      const response = await request(app).put('/comments/1').send(putBody);
+      expect(response.status).toBe(204);
+
+      expect(getDbData().comments.at(1).content).toBe('New Content!');
+    });
+
+    test('PUT /comments without parameter id returns status 400', async () => {
+      const putBody = {
+        content: 'Test Content'
+      };
+      const response = await request(app).put('/comments').send(putBody);
+      expect(response.status).toBe(400);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('no-comment-to-put');
+    });
+  });
 });
 
 afterAll(() => {
