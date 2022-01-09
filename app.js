@@ -161,19 +161,26 @@ app.route('/comments(/:id(\\d+))?')
 
         // adds comment id to parent card's comment array property
         const parentCard = helpers.search(jsonData.cards, [newComment.parent])[0];
-        parentCard.comments.push(newComment.id);
-
-        jsonData.comments.push(newComment);
-
-        const jsonString = JSON.stringify(jsonData, null, 2);
-        fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
-          res.status(201);
+        if (!parentCard) {
+          res.status(404);
           res.json({
-            message: 'Added new comment successfully.',
-            newTotalComments: parentCard.comments.length,
-            id: newComment.id
+            error: 'parent-card-not-found',
+            message: 'The parent card with specified id was not found in the database.'
           });
-        });
+        } else {
+          parentCard.comments.push(newComment.id);
+
+          jsonData.comments.push(newComment);
+          const jsonString = JSON.stringify(jsonData, null, 2);
+          fs.writeFile('./serverdb.json', jsonString, 'utf-8', () => {
+            res.status(201);
+            res.json({
+              message: 'Added new comment successfully.',
+              newTotalComments: parentCard.comments.length,
+              id: newComment.id
+            });
+          });
+        }
       }
     });
   })
