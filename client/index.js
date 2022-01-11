@@ -101,11 +101,11 @@ async function newCardFormSubmitListener (event) {
   } catch (e) {
     const alertDiv = document.getElementById('formErrorAlert');
     alertDiv.innerHTML = makeAlert(
-      'Post creation failed!',
+      'Card creation failed!',
       'You might have lost connection to the server.'
     );
   } finally {
-    submitButton.innerHTML = 'Post!';
+    submitButton.innerHTML = 'Submit!';
   }
 }
 
@@ -116,7 +116,7 @@ async function newCommentFormSubmitListener (event) {
   const form = event.currentTarget;
 
   const parentId = Number(form.id.match(/\d+/g)[0]);
-  const postButton = document.getElementById(`commentPostButton${parentId}`);
+  const postButton = document.getElementById(`commentPostButton-${parentId}`);
   postButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
   const formData = new FormData(form);
@@ -127,7 +127,7 @@ async function newCommentFormSubmitListener (event) {
     const apiResponse = await postFormDataToUrlAsJSON('comments', formDataObj);
     const apiResponseJSON = await apiResponse.json();
 
-    const commentDisplayedCount = document.getElementById(`post${parentId}CommentCount`);
+    const commentDisplayedCount = document.getElementById(`card-${parentId}-commentCount`);
     commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/;\d+/, `;${apiResponseJSON.newTotalComments}`);
     updateComments(parentId);
     form.reset();
@@ -161,7 +161,7 @@ hljs.listLanguages().forEach((langName) => {
 });
 
 const documentCards = document.getElementById('cards');
-const documentCardModals = document.getElementById('postModals');
+const documentCardModals = document.getElementById('cardModals');
 const sortSelector = document.getElementById('sortingOption');
 
 let cardArrayCache = [];
@@ -292,7 +292,7 @@ async function getComments (cardId) {
 }
 
 function updateComments (cardId) {
-  const commentsULEl = document.getElementById(`card${cardId}CommentsList`);
+  const commentsULEl = document.getElementById(`card-${cardId}-CommentsList`);
   commentsULEl.innerHTML = `<div class="d-flex justify-content-center">
   <div class="spinner-border" role="status">
     <span class="visually-hidden">Loading comments...</span>

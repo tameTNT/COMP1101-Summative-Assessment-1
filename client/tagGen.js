@@ -7,15 +7,15 @@ export function makeCardHTMLBlock (title, language, code, id, likes, commentCoun
       <h6 class="card-subtitle mb-2 text-muted">Language: ${language}</h6>
       <pre><code class="language-${language.toLowerCase()} code-snippet rounded-3" tabindex="0">${code}</code></pre>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#postId-${id}">See post
+              data-bs-target="#cardId-${id}">See more
       </button>
     </div>
     <div class="card-footer text-muted">
       <div class="d-flex justify-content-between">
-        <div class="text-danger" id="card1Likes">
+        <div class="text-danger" id="card-${id}-likes">
           ${likes}&nbsp;<a href="#" class="text-danger like-button"><3</a> s
         </div>
-        <div id="post${id}CommentCount">
+        <div id="card-${id}-commentCount">
           <span class="material-icons md-24 align-middle">forum</span>&nbsp;${commentCount}
         </div>
         <div class="text-start" title="${exactTime}">
@@ -29,8 +29,7 @@ export function makeCardHTMLBlock (title, language, code, id, likes, commentCoun
 
 export function makeCardModalHTMLBlock (id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
   return `
-<div class="modal fade" id="postId-${id}" tabindex="-1" aria-labelledby="postId-${id}ModalLabel"
-           aria-hidden="true">
+<div class="modal fade" id="cardId-${id}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header">
@@ -39,7 +38,7 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
                 aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <pre><code class="language-${language.toLowerCase()} code-text rounded-3" tabindex="0">${code}</code></pre>
+        <pre><code class="language-${language.toLowerCase()} code-text rounded-3">${code}</code></pre>
         <div class="container mt-2 mb-2 ms-0">
           <div class="row align-items-center">
             <div class="col-sm-auto">
@@ -72,15 +71,15 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
           <span class="material-icons md-36 align-middle me-2">forum</span>
           <h1><span class="align-middle">Comments</span></h1>
         </div>
-        <form class="comment-form" id="commentForm${id}">
+        <form class="comment-form" id="commentForm-${id}">
           <div class="input-group mt-2 mb-2">
             <span class="input-group-text">Comment:</span>
             <textarea class="form-control" aria-label="Comment Text" name="content" required></textarea>
-            <button class="btn btn-outline-secondary" type="submit" id="commentPostButton${id}">Post!</button>
+            <button class="btn btn-outline-secondary" type="submit" id="commentPostButton-${id}">Post!</button>
           </div>
           <div id="commentAlert${id}"></div>
         </form>
-        <ul class="list-group list-group-flush comment-scroll" id="card${id}CommentsList">
+        <ul class="list-group list-group-flush comment-scroll" id="card-${id}-CommentsList">
           <!-- todo: shorten comments via JS adapting to device width -->
         </ul>
       </div>
@@ -126,7 +125,7 @@ export function commentLiElement (id, content, relativeTime, timeDetailString) {
 export function placeholderCard () {
   return `
 <div class="col temp-placeholder-card">
-  <div class="card h-100" aria-hidden="true">
+  <div class="card h-100" tabindex="-1" aria-hidden="true">
     <div class="card-body">
       <h5 class="card-title placeholder-glow">
         <span class="placeholder col-4 rounded-pill"></span>
@@ -162,7 +161,7 @@ export function noCardsCard () {
   <div class="card h-100">
     <div class="card-body">
       <h5 class="card-title">There are no cards to display :(</h5>
-      <p class="card-text">Why not try adding one using the new post button below?</p>
+      <p class="card-text">Why not try adding one using the new card button below?</p>
     </div>
   </div>
 </div>`;
