@@ -1,30 +1,30 @@
-const fs = require('fs');
+const helpers = require('./helperFunctions.js'); // import helper functions that help do some repetitive tasks
 
-const { DateTime } = require('luxon');
+const fs = require('fs');
+const FILE_ERROR_MESSAGE = 'An internal server error occurred within the API while accessing the .json database file. Please try again later.';
+
+const { DateTime } = require('luxon'); // Datetime logic for tracking initial entity creation
 
 const express = require('express');
 const app = express();
 
-const helpers = require('./helperFunctions.js');
-
-const FILE_ERROR_MESSAGE = 'An internal server error occurred within the API while accessing the .json database file. Please try again later.';
-
-app.use(express.static('client'));
-app.use(express.json());
+app.use(express.static('client')); // serve the user the ./client folder with all the .html and .js files for local rendering
+app.use(express.json()); // parse request bodies as JSON automatically using express's json middleware function
 
 /**
- * @param req {express.Request}
- * @param res {express.Response}
- * @param req.params.id {String | undefined}
- * @param req.query.ids {String | undefined}
+ * @param req {express.Request} Incoming request to API
+ * @param res {express.Response} Response to be sent to user from API
+ * @param req.params.id {String | undefined} req id parameter
+ * @param req.query.ids {String | undefined} req ids query string
  */
-app.route('/cards(/:id(\\d+))?')
+app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1; /cards?ids=1,2
   .get((req, res) => {
+    // capture id parameter and query string (?ids=...)
     const reqParamId = req.params.id;
     const reqQueryIds = req.query.ids;
 
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
-      if (err) {
+      if (err) { // if an error occurs while reading the file, return a 500 Internal Server Error and log it to the console for later reference
         console.log(err);
         res.status(500);
         res.json({
@@ -32,27 +32,33 @@ app.route('/cards(/:id(\\d+))?')
           message: FILE_ERROR_MESSAGE
         });
       } else {
-        /** @type {{cards: Object[], comments: Object[]}} jsonData */
-        const jsonData = JSON.parse(fileData);
+        /** @type {{cards: Object[], comments: Object[]}} fileJsonData */
+        const fileJsonData = JSON.parse(fileData);
 
-        const reqCards = helpers.handleIdUrl(jsonData.cards, reqParamId, reqQueryIds);
+        // this helper function automatically returns the specified card/s from fileJsonData.cards using the provided request's parameters/queries
+        const reqCards = helpers.handleIdUrl(fileJsonData.cards, reqParamId, reqQueryIds);
 
         if (reqCards.length === 0 && reqParamId !== undefined) {
+          // we only want to return a 404 error if a non-existent card was requested specifically by parameter id
+          // the API schema allows for using the ?ids query to return an empty array if no results were found matching provided id/s
           res.status(404);
           res.json({
             error: 'card(s)-not-found',
             message: 'No card/s with that/those id/s were found in the database.'
           });
         } else {
-          // update cards' reddit data while GETting
+          // take this opportunity to update cards' associated reddit data
           for (const card of reqCards) {
             const redditData = await helpers.getRedditData(card.redditUrl);
-            helpers.updateCardRedditData(card, redditData);
+            if (redditData) { // check redditData is not undefined here just in case the redditUrl associated with the card no longer exists (e.g. comment was deleted)
+              helpers.updateCardRedditData(card, redditData);
+            } // if it is indeed undefined, we just leave the data as it as a legacy record instead of removing the card entirely
           }
 
-          const jsonString = JSON.stringify(jsonData, null, 2);
+          // generate the string of the json data to write back to file using indentation of 2 spaces
+          const jsonString = JSON.stringify(fileJsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
-            if (err) {
+            if (err) { // if an error occurs while writing to the file, return a 500 Internal Server Error and log it to the console for later reference
               console.log(err);
               res.status(500);
               res.json({
@@ -61,10 +67,10 @@ app.route('/cards(/:id(\\d+))?')
               });
             } else {
               res.status(200);
-              if (reqParamId !== undefined) {
+              if (reqParamId !== undefined) { // if a parameter was provided in the url, then the user wants just one specific card so return just the object and not an Array
                 res.send(reqCards[0]);
               } else {
-                res.send(reqCards);
+                res.send(reqCards); // return the updated array of cards that match the API request
               }
             }
           });
@@ -82,11 +88,11 @@ app.route('/cards(/:id(\\d+))?')
           message: FILE_ERROR_MESSAGE
         });
       } else {
-        const jsonData = JSON.parse(fileData);
+        const fileJsonData = JSON.parse(fileData);
 
-        const newCard = req.body; // includes fields: title, language, code, redditUrl
+        const newCard = req.body; // the request body for a POST request should include the fields: title, language, code, redditUrl
 
-        newCard.id = helpers.getNewValidId(jsonData.cards);
+        newCard.id = helpers.getNewValidId(fileJsonData.cards);
         newCard.likes = 0;
         newCard.time = DateTime.now().toUTC();
         newCard.comments = [];
@@ -100,7 +106,7 @@ app.route('/cards(/:id(\\d+))?')
           redditData = await helpers.getRedditData(newCard.redditUrl);
         }
 
-        if (!redditData) {
+        if (!redditData) { // redditData does not exist (e.g. is undefined)
           res.status(422);
           res.json({
             error: 'reddit-link-failed',
@@ -108,9 +114,9 @@ app.route('/cards(/:id(\\d+))?')
           });
         } else {
           helpers.updateCardRedditData(newCard, redditData);
-          jsonData.cards.push(newCard);
+          fileJsonData.cards.push(newCard);
 
-          const jsonString = JSON.stringify(jsonData, null, 2);
+          const jsonString = JSON.stringify(fileJsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
             if (err) {
               console.log(err);
@@ -160,9 +166,9 @@ app.route('/comments(/:id(\\d+))?')
           message: FILE_ERROR_MESSAGE
         });
       } else {
-        const jsonData = JSON.parse(fileData);
+        const fileJsonData = JSON.parse(fileData);
 
-        const reqComments = helpers.handleIdUrl(jsonData.comments, reqParamId, reqQueryIds);
+        const reqComments = helpers.handleIdUrl(fileJsonData.comments, reqParamId, reqQueryIds);
 
         if (reqComments.length === 0 && reqParamId !== undefined) {
           res.status(404);
@@ -191,11 +197,11 @@ app.route('/comments(/:id(\\d+))?')
           message: FILE_ERROR_MESSAGE
         });
       } else {
-        const jsonData = JSON.parse(fileData);
+        const fileJsonData = JSON.parse(fileData);
 
         const newComment = req.body; // includes fields: content, parent
 
-        newComment.id = helpers.getNewValidId(jsonData.comments);
+        newComment.id = helpers.getNewValidId(fileJsonData.comments);
         newComment.time = DateTime.now().toUTC();
         newComment.lastEdited = null;
 
@@ -210,8 +216,8 @@ app.route('/comments(/:id(\\d+))?')
         } else {
           parentCard.comments.push(newComment.id);
 
-          jsonData.comments.push(newComment);
-          const jsonString = JSON.stringify(jsonData, null, 2);
+          fileJsonData.comments.push(newComment);
+          const jsonString = JSON.stringify(fileJsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
             if (err) {
               console.log(err);
@@ -243,7 +249,7 @@ app.route('/comments(/:id(\\d+))?')
           message: FILE_ERROR_MESSAGE
         });
       } else {
-        const jsonData = JSON.parse(fileData);
+        const fileJsonData = JSON.parse(fileData);
 
         const reqParamId = req.params.id;
         if (!reqParamId) {
@@ -255,11 +261,11 @@ app.route('/comments(/:id(\\d+))?')
         } else {
           const newCommentContent = req.body.content; // includes fields: content
 
-          const targetComment = helpers.handleIdUrl(jsonData.comments, reqParamId, '')[0];
+          const targetComment = helpers.handleIdUrl(fileJsonData.comments, reqParamId, '')[0];
           targetComment.content = newCommentContent;
           targetComment.lastEdited = DateTime.now().toUTC();
 
-          const jsonString = JSON.stringify(jsonData, null, 2);
+          const jsonString = JSON.stringify(fileJsonData, null, 2);
           fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
             if (err) {
               console.log(err);
