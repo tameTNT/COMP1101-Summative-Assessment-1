@@ -10,9 +10,9 @@
       "time": "2022-01-06T17:03:18.412Z",
       "comments": [],
       "redditData": {
-        "score": 14,
+        "score": 12,
         "author": "4HbQ",
-        "numSubComments": 1
+        "replies": 1
       }
     },
     {
@@ -30,7 +30,7 @@
       "redditData": {
         "score": 92,
         "author": "4HbQ",
-        "numSubComments": 10
+        "replies": 10
       }
     },
     {
@@ -45,9 +45,9 @@
         1
       ],
       "redditData": {
-        "score": 17,
+        "score": 18,
         "author": "frankbsad",
-        "numSubComments": 2
+        "replies": 2
       }
     }
   ],

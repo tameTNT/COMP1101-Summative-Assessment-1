@@ -238,7 +238,7 @@ function insertCardsOnPage (cardArray) {
 
       documentCardModals.innerHTML = makeCardModalBlock(
         card.id, card.title, langUpper, card.code, card.redditUrl,
-        card.redditData.score, card.redditData.author, card.redditData.numSubComments
+        card.redditData.score, card.redditData.author, card.redditData.replies
       ) + documentCardModals.innerHTML;
     }
 

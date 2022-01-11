@@ -200,7 +200,7 @@ app.route('/comments(/:id(\\d+))?')
         newComment.lastEdited = null;
 
         // adds comment id to parent card's comment array property
-        const parentCard = helpers.search(jsonData.cards, [newComment.parent])[0];
+        const parentCard = helpers.searchId(fileJsonData.cards, [newComment.parent])[0];
         if (!parentCard) {
           res.status(404);
           res.json({

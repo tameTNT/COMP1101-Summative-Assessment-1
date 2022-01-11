@@ -27,7 +27,7 @@ export function makeCardBlock (title, language, code, id, likes, commentCount, r
 </div>`;
 }
 
-export function makeCardModalBlock (id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
+export function makeCardModalBlock (id, title, language, code, redditLink, rUpvotes, rUser, rReplies) {
   return `
 <div class="modal fade" id="cardId-${id}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
@@ -58,9 +58,9 @@ export function makeCardModalBlock (id, title, language, code, redditLink, rUpvo
                   <span class="material-icons md-24 align-middle">account_circle</span>
                   <span class="align-middle">${rUser}</span>
                 </div>
-                <div class="col col-sm-auto" title="Reddit comments">
+                <div class="col col-sm-auto" title="Reddit replies">
                   <span class="material-icons md-24 align-middle">analytics</span>
-                  <span class="align-middle">${rComments}</span>
+                  <span class="align-middle">${rReplies}</span>
                 </div>
               </div>
             </div>
