@@ -74,7 +74,7 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
         <form class="comment-form" id="commentForm-${id}">
           <div class="input-group mt-2 mb-2">
             <span class="input-group-text">Comment:</span>
-            <textarea class="form-control" aria-label="Comment Text" name="content" required></textarea>
+            <textarea class="form-control" aria-label="Comment Content" name="content" required></textarea>
             <button class="btn btn-outline-secondary" type="submit" id="commentPostButton-${id}">Post!</button>
           </div>
           <div id="commentAlert${id}"></div>
