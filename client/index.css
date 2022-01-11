@@ -39,6 +39,15 @@
   white-space: nowrap;
 }
 
+#newCardCodeInput {
+  height: 100px;
+  white-space: pre;
+}
+
+#codeInputPreview {
+  white-space: pre;
+}
+
 .float-button {
   position: fixed;
   width: 80px;
