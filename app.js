@@ -9,7 +9,7 @@ const express = require('express');
 const app = express();
 
 app.use(express.static('client')); // serve the user the ./client folder with all the .html and .js files for local rendering
-app.use(express.json()); // parse request bodies as JSON automatically using express's json middleware function
+app.use(express.json()); // parse request bodies (i.e. req.body) as JSON automatically using express's json middleware function
 
 /**
  * @param req {express.Request} Incoming request to API
@@ -26,7 +26,7 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) { // if an error occurs while reading the file, return a 500 Internal Server Error and log it to the console for later reference
         console.log(err);
-        res.status(500);
+        res.status(500); // 500 Internal Server Error
         res.json({
           error: 'database-read-error',
           message: FILE_ERROR_MESSAGE
@@ -41,7 +41,7 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
         if (reqCards.length === 0 && reqParamId !== undefined) {
           // we only want to return a 404 error if a non-existent card was requested specifically by parameter id
           // the API schema allows for using the ?ids query to return an empty array if no results were found matching provided id/s
-          res.status(404);
+          res.status(404); // 404 Not Found
           res.json({
             error: 'card(s)-not-found',
             message: 'No card/s with that/those id/s were found in the database.'
@@ -66,7 +66,7 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
                 message: FILE_ERROR_MESSAGE
               });
             } else {
-              res.status(200);
+              res.status(200); // 200 OK
               if (reqParamId !== undefined) { // if a parameter was provided in the url, then the user wants just one specific card so return just the object and not an Array
                 res.send(reqCards[0]);
               } else {
@@ -90,9 +90,14 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
       } else {
         const fileJsonData = JSON.parse(fileData);
 
-        const newCard = req.body; // the request body for a POST request should include the fields: title, language, code, redditUrl
+        const newCard = req.body;
+        // check that the request body provided is actually valid and contains all the expected and required properties
+        if (!helpers.isRequestBodyValid(newCard, ['title', 'language', 'code', 'redditUrl'], res)) {
+          return;
+        }
 
-        newCard.id = helpers.getNewValidId(fileJsonData.cards);
+        // todo: commenting progress
+        newCard.id = helpers.getNewId(fileJsonData.cards);
         newCard.likes = 0;
         newCard.time = DateTime.now().toUTC();
         newCard.comments = [];
@@ -199,9 +204,12 @@ app.route('/comments(/:id(\\d+))?')
       } else {
         const fileJsonData = JSON.parse(fileData);
 
-        const newComment = req.body; // includes fields: content, parent
+        const newComment = req.body;
+        if (!helpers.isRequestBodyValid(newComment, ['content', 'parent'], res)) {
+          return;
+        }
 
-        newComment.id = helpers.getNewValidId(fileJsonData.comments);
+        newComment.id = helpers.getNewId(fileJsonData.comments);
         newComment.time = DateTime.now().toUTC();
         newComment.lastEdited = null;
 
@@ -253,13 +261,17 @@ app.route('/comments(/:id(\\d+))?')
 
         const reqParamId = req.params.id;
         if (!reqParamId) {
-          res.status(400);
+          res.status(400); // 400 Bad Request
           res.json({
             error: 'no-comment-to-put',
             message: 'No comment id was provided.'
           });
         } else {
-          const newCommentContent = req.body.content; // includes fields: content
+          let newCommentContent = req.body;
+          if (!helpers.isRequestBodyValid(newCommentContent, ['content'], res)) {
+            return;
+          }
+          newCommentContent = newCommentContent.content;
 
           const targetComment = helpers.handleIdUrl(fileJsonData.comments, reqParamId, '')[0];
           targetComment.content = newCommentContent;

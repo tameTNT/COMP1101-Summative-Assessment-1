@@ -12,6 +12,7 @@ expect.extend({ toMatchCloseTo });
 // }
 const matchPrecision = -Math.log10(20); // will result in a match tolerance of ±10
 
+// todo: commenting progress
 const getDbData = function () {
   return JSON.parse(fs.readFileSync('./serverdb.json', 'utf8'));
 };
@@ -113,6 +114,19 @@ describe('Test POST & PUT methods', () => {
       expect(getDbData().cards.at(-1).title).toBe('Test Title');
     });
 
+    test('POST /cards with invalid post body returns status 400', async () => {
+      const postBody = {
+        randomField: 'This is clearly missing required fields'
+      };
+      const response = await request(app).post('/cards').send(postBody);
+      expect(response.status).toBe(400);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('request-body-field-error');
+      // response message should include these four property names
+      expect(jsonResponse.message).toMatch(/(?=.*title)(?=.*language)(?=.*code)(?=.*redditUrl)/);
+    });
+
     test('POST /cards returns status 422 when Reddit link invalid by RegExp', async () => {
       const postBody = {
         title: 'Test Title',
@@ -158,6 +172,18 @@ describe('Test POST & PUT methods', () => {
       expect(dbData.comments.at(-1).content).toBe('Test Content');
     });
 
+    test('POST /comments with invalid post body returns status 400', async () => {
+      const postBody = {
+        randomField: 'This is clearly missing required fields'
+      };
+      const response = await request(app).post('/comments').send(postBody);
+      expect(response.status).toBe(400);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('request-body-field-error');
+      expect(jsonResponse.message).toMatch(/(?=.*content)(?=.*parent)/);
+    });
+
     test('POST /comments returns status 404 with non-existent parent id', async () => {
       const postBody = {
         content: 'Test Content',
@@ -178,6 +204,18 @@ describe('Test POST & PUT methods', () => {
       expect(response.status).toBe(204);
 
       expect(getDbData().comments.at(1).content).toBe('New Content!');
+    });
+
+    test('PUT /comments/1 with invalid put body returns status 400', async () => {
+      const putBody = {
+        randomField: 'This is clearly missing required fields'
+      };
+      const response = await request(app).put('/comments/1').send(putBody);
+      expect(response.status).toBe(400);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('request-body-field-error');
+      expect(jsonResponse.message).toMatch(/content/);
     });
 
     test('PUT /comments without parameter id returns status 400', async () => {
