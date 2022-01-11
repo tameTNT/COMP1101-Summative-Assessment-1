@@ -1,10 +1,10 @@
 import {
-  commentLiElement,
   makeAlert,
-  makeCardHTMLBlock,
-  makeCardModalHTMLBlock,
-  noCardsCard,
-  placeholderCard
+  makeCardBlock,
+  makeCardModalBlock,
+  makeNoCardsCard,
+  makePlaceholderCardBlock,
+  makeSingleCommentLiElement
 } from './tagGen.js';
 
 // eslint-disable-next-line no-undef
@@ -167,8 +167,8 @@ const sortSelector = document.getElementById('sortingOption');
 let cardArrayCache = [];
 
 async function getAllCards (sortBy) {
-  documentCards.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4';
-  documentCards.innerHTML = placeholderCard().repeat(3);
+  documentCards.className = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4';
+  documentCards.innerHTML = makePlaceholderCardBlock().repeat(3);
 
   const alertDiv = document.getElementById('pageErrorAlert');
   alertDiv.innerHTML = '';
@@ -231,12 +231,12 @@ function insertCardsOnPage (cardArray) {
 
       const langUpper = firstLetterUpper(card.language);
 
-      documentCards.innerHTML = makeCardHTMLBlock(
+      documentCards.innerHTML = makeCardBlock(
         card.title, langUpper, card.code, card.id, card.likes,
         card.comments.length, relativeTime, exactTime
       ) + documentCards.innerHTML;
 
-      documentCardModals.innerHTML = makeCardModalHTMLBlock(
+      documentCardModals.innerHTML = makeCardModalBlock(
         card.id, card.title, langUpper, card.code, card.redditUrl,
         card.redditData.score, card.redditData.author, card.redditData.numSubComments
       ) + documentCardModals.innerHTML;
@@ -248,7 +248,7 @@ function insertCardsOnPage (cardArray) {
       });
     });
   } else {
-    documentCards.innerHTML = noCardsCard();
+    documentCards.innerHTML = makeNoCardsCard();
     documentCards.className = 'row row-cols-1';
   }
 }
@@ -315,13 +315,13 @@ function updateComments (cardId) {
           timeDetailString = comment.time.toLocaleString(TIMESTRINGFORMAT);
         }
 
-        commentsULEl.innerHTML += commentLiElement(comment.id, comment.content, comment.time.toRelative(), timeDetailString);
+        commentsULEl.innerHTML += makeSingleCommentLiElement(comment.id, comment.content, comment.time.toRelative(), timeDetailString);
       }
       commentsULEl.querySelectorAll('a').forEach((el) => {
         el.addEventListener('click', () => editCommentAction(el), { once: true });
       });
     } else {
-      commentsULEl.innerHTML += commentLiElement(null, 'No comments yet!', null);
+      commentsULEl.innerHTML += makeSingleCommentLiElement(null, 'No comments yet!', null);
     }
   });
 }

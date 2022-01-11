@@ -1,12 +1,12 @@
-export function makeCardHTMLBlock (title, language, code, id, likes, commentCount, relativeTime, exactTime) {
+export function makeCardBlock (title, language, code, id, likes, commentCount, relativeTime, exactTime) {
   return `
 <div class="col">
   <div class="card h-100">
-    <div class="card-body">
+    <div class="card-body d-flex flex-column">
       <h5 class="card-title">${title}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Language: ${language}</h6>
       <pre><code class="language-${language.toLowerCase()} code-snippet rounded-3" tabindex="0">${code}</code></pre>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+      <button type="button" class="btn btn-primary mt-auto" data-bs-toggle="modal"
               data-bs-target="#cardId-${id}">See more
       </button>
     </div>
@@ -27,7 +27,7 @@ export function makeCardHTMLBlock (title, language, code, id, likes, commentCoun
 </div>`;
 }
 
-export function makeCardModalHTMLBlock (id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
+export function makeCardModalBlock (id, title, language, code, redditLink, rUpvotes, rUser, rComments) {
   return `
 <div class="modal fade" id="cardId-${id}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable modal-dialog-centered modal-xl">
@@ -88,7 +88,7 @@ export function makeCardModalHTMLBlock (id, title, language, code, redditLink, r
 </div>`;
 }
 
-export function commentLiElement (id, content, relativeTime, timeDetailString) {
+export function makeSingleCommentLiElement (id, content, relativeTime, timeDetailString) {
   if (relativeTime) {
     let baseString = `
 <li class="list-group-item">
@@ -122,7 +122,7 @@ export function commentLiElement (id, content, relativeTime, timeDetailString) {
   }
 }
 
-export function placeholderCard () {
+export function makePlaceholderCardBlock () {
   return `
 <div class="col temp-placeholder-card">
   <div class="card h-100" tabindex="-1" aria-hidden="true">
@@ -138,10 +138,12 @@ export function placeholderCard () {
         <span class="placeholder col-4 rounded-pill"></span>
         <span class="placeholder col-7 rounded-pill"></span>
       </p>
-      <a href="#" class="btn btn-primary disabled placeholder col-4"></a>
+      <a href="#" class="btn btn-primary disabled placeholder col-12"></a>
     </div>
     <div class="card-footer text-muted placeholder-glow">
-      <span class="placeholder col-5 rounded-pill"></span>
+      <span class="placeholder col-3 rounded-pill"></span>
+      <span class="placeholder col-2 rounded-pill"></span>
+      <span class="placeholder col-4 rounded-pill"></span>
     </div>
   </div>
 </div>`;
@@ -155,7 +157,7 @@ export function makeAlert (strong, body) {
 </div>`;
 }
 
-export function noCardsCard () {
+export function makeNoCardsCard () {
   return `
 <div class="col">
   <div class="card h-100">
