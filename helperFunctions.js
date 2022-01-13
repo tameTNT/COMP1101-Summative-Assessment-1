@@ -37,7 +37,7 @@ module.exports.handleIdUrl = function (searchArray, paramId, queryIds) {
 
 /**
  * @param {String} redditUrl Basic Reddit URL to fetch data from (without any .json added - the function does this)
- * @return {{score: Number, author: String, replies: Object[] | String} | undefined} Required data (more is returned than is typed here) from Reddit's JSON API (redditJSON[1].data.children[0].data) if no error occurred during fetching process (e.g. url doesn't exist); else, undefined
+ * @return {Promise<{score: Number, author: String, replies: Object[] | String} | undefined>} Required data (more is returned than is typed here) from Reddit's JSON API (redditJSON[1].data.children[0].data) if no error occurred during fetching process (e.g. url doesn't exist); else, undefined
  */
 module.exports.getRedditData = async function (redditUrl) {
   const redditJSONUrl = redditUrl + '.json';
@@ -80,7 +80,6 @@ module.exports.getNewId = function (currentArray) {
   }
 };
 
-// noinspection JSValidateJSDoc - since express not imported in this file
 /**
  * @param {Object} reqBody JS Object returned from req.body
  * @param {String[]} propertiesArray Array of property names reqBody should possess

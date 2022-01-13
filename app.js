@@ -11,13 +11,14 @@ const app = express();
 app.use(express.static('client')); // serve the user the ./client folder with all the .html and .js files for local rendering
 app.use(express.json()); // parse request bodies (i.e. req.body) as JSON automatically using express's json middleware function
 
+// == /cards endpoints ==
 /**
  * @param req {express.Request} Incoming request to API
  * @param res {express.Response} Response to be sent to user from API
  * @param req.params.id {String | undefined} req id parameter
  * @param req.query.ids {String | undefined} req ids query string
  */
-app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1; /cards?ids=1,2
+app.route('/cards(/:id(\\d+))?') // e.g. GET /cards; /cards/1; /cards/2; /cards?ids=1; /cards?ids=1,2
   .get((req, res) => {
     // capture id parameter and query string (?ids=...)
     const reqParamId = req.params.id;
@@ -78,7 +79,7 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
       }
     });
   })
-  .post((req, res) => {
+  .post((req, res) => { // POST /cards
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
         console.log(err);
@@ -96,28 +97,29 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
           return;
         }
 
-        // todo: commenting progress
+        // initialise property values
         newCard.id = helpers.getNewId(fileJsonData.cards);
         newCard.likes = 0;
-        newCard.time = DateTime.now().toUTC();
+        newCard.time = DateTime.now().toUTC(); // uses current server datetime in UTC
         newCard.comments = [];
 
-        const urlRegexp = /https:\/\/www.reddit.com\/r\/adventofcode\/comments\/\w+\/comment\/\w+/;
-        const regExpMatch = newCard.redditUrl.match(urlRegexp);
+        const urlRegExp = /https:\/\/www.reddit.com\/r\/adventofcode\/comments\/\w+\/comment\/\w+/;
+        const regExpMatch = newCard.redditUrl.match(urlRegExp); // check the provided redditUrl is in the expected form
 
-        let redditData;
+        let redditData; // initialise to undefined in case no RegExp match
         if (regExpMatch) {
-          newCard.redditUrl = regExpMatch[0]; // first element of match array is whole url that matches regexp
+          newCard.redditUrl = regExpMatch[0]; // first element of match array is whole url that matches the RegExp
           redditData = await helpers.getRedditData(newCard.redditUrl);
         }
 
-        if (!redditData) { // redditData does not exist (e.g. is undefined)
-          res.status(422);
+        if (!redditData) { // redditData does not exist (e.g. is undefined) - either because no regExpMatch or getRedditData(...) returned undefined
+          res.status(422); // 422 Unprocessable Entity
           res.json({
             error: 'reddit-link-failed',
             message: "The provided Reddit link couldn't be resolved. Please check the link is correct."
           });
         } else {
+          // add the newly retrieved (and now confirmed valid) Reddit data to the card object and push this card to the cards array
           helpers.updateCardRedditData(newCard, redditData);
           fileJsonData.cards.push(newCard);
 
@@ -131,7 +133,7 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
                 message: FILE_ERROR_MESSAGE
               });
             } else {
-              res.status(201);
+              res.status(201); // 201 Created
               res.json({
                 message: 'Added new card successfully.',
                 id: newCard.id
@@ -143,13 +145,15 @@ app.route('/cards(/:id(\\d+))?') // e.g. /cards; /cards/1; /cards/2 /cards?ids=1
     });
   });
 
-app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
+app.get('/cards/:id(\\d+)/reddit', async (req, res) => { // e.g. GET /cards/1/reddit; /cards/2/reddit
   const reqParamId = req.params.id;
-  const cards = require('./serverdb.json').cards;
-  const reqCard = helpers.handleIdUrl(cards, reqParamId, '')[0];
+
+  const cards = require('./serverdb.json').cards; // load cards from database
+  const reqCard = helpers.handleIdUrl(cards, reqParamId, '')[0]; // find the one specific card
   if (reqCard) {
+    // return Reddit data associated with card's redditUrl property
     res.json(await helpers.getRedditData(reqCard.redditUrl));
-  } else {
+  } else { // handleIdUrl(...)[0] is undefined (because card with id reqParamId wasn't found in cards
     res.status(404);
     res.json({
       error: 'card(s)-not-found',
@@ -158,8 +162,9 @@ app.get('/cards/:id(\\d+)/reddit', async (req, res) => {
   }
 });
 
-app.route('/comments(/:id(\\d+))?')
-  .get((req, res) => {
+// == /comments endpoints ==
+app.route('/comments(/:id(\\d+))?') // e.g. GET /comments; /comments/1; /comments/2 /comments?ids=1; /comments?ids=1,2
+  .get((req, res) => { // many of the same comments as for the /cards endpoints apply for these functions since they provide essentially the same functionality for the different entity
     const reqParamId = req.params.id;
     const reqQueryIds = req.query.ids;
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
@@ -192,7 +197,7 @@ app.route('/comments(/:id(\\d+))?')
       }
     });
   })
-  .post((req, res) => {
+  .post((req, res) => { // POST /comments
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
         console.log(err);
@@ -211,9 +216,9 @@ app.route('/comments(/:id(\\d+))?')
 
         newComment.id = helpers.getNewId(fileJsonData.comments);
         newComment.time = DateTime.now().toUTC();
-        newComment.lastEdited = null;
+        newComment.lastEdited = null; // lastEdited property initially set to null to be updated later
 
-        // adds comment id to parent card's comment array property
+        // adds comment id to parent card's comments property
         const parentCard = helpers.searchId(fileJsonData.cards, [newComment.parent])[0];
         if (!parentCard) {
           res.status(404);
@@ -238,7 +243,7 @@ app.route('/comments(/:id(\\d+))?')
               res.status(201);
               res.json({
                 message: 'Added new comment successfully.',
-                newTotalComments: parentCard.comments.length,
+                newTotalComments: parentCard.comments.length, // newTotalComments is used client side to update page labels
                 id: newComment.id
               });
             }
@@ -247,7 +252,8 @@ app.route('/comments(/:id(\\d+))?')
       }
     });
   })
-  .put((req, res) => {
+  .put((req, res) => { // e.g. PUT /cards/1; /cards/2
+    // used to update comment content after initial creation
     fs.readFile('./serverdb.json', 'utf8', async (err, fileData) => {
       if (err) {
         console.log(err);
@@ -267,29 +273,37 @@ app.route('/comments(/:id(\\d+))?')
             message: 'No comment id was provided.'
           });
         } else {
-          let newCommentContent = req.body;
-          if (!helpers.isRequestBodyValid(newCommentContent, ['content'], res)) {
+          const newContent = req.body.content;
+          if (!helpers.isRequestBodyValid(req.body, ['content'], res)) {
             return;
           }
-          newCommentContent = newCommentContent.content;
 
+          // find relevant comment object that needs to be updated
           const targetComment = helpers.handleIdUrl(fileJsonData.comments, reqParamId, '')[0];
-          targetComment.content = newCommentContent;
-          targetComment.lastEdited = DateTime.now().toUTC();
+          if (!targetComment) { // if no comment with the given id is found, targetComment will be undefined
+            res.status(404);
+            res.json({
+              error: 'comment(s)-not-found',
+              message: 'No comment with that id was found in the database to update.'
+            });
+          } else {
+            targetComment.content = newContent; // update comment's content to newly supplied content
+            targetComment.lastEdited = DateTime.now().toUTC(); // lastEdited property updated to current server time
 
-          const jsonString = JSON.stringify(fileJsonData, null, 2);
-          fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
-            if (err) {
-              console.log(err);
-              res.status(500);
-              res.json({
-                error: 'database-write-error',
-                message: FILE_ERROR_MESSAGE
-              });
-            } else {
-              res.sendStatus(204);
-            }
-          });
+            const jsonString = JSON.stringify(fileJsonData, null, 2);
+            fs.writeFile('./serverdb.json', jsonString, 'utf-8', (err) => {
+              if (err) {
+                console.log(err);
+                res.status(500);
+                res.json({
+                  error: 'database-write-error',
+                  message: FILE_ERROR_MESSAGE
+                });
+              } else {
+                res.sendStatus(204); // 204 No Content
+              }
+            });
+          }
         }
       }
     });
