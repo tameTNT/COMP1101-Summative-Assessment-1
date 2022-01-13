@@ -7,9 +7,10 @@ import {
   makeSingleCommentLiElement
 } from './tagGen.js';
 
+// luxon is loaded in index.html
 // eslint-disable-next-line no-undef
 const DateTime = luxon.DateTime;
-const TIMESTRINGFORMAT = {
+const TIMESTRINGFORMAT = { // format to use for short time string hover text
   hour: '2-digit',
   minute: '2-digit',
   hour12: false,
@@ -18,21 +19,32 @@ const TIMESTRINGFORMAT = {
   year: '2-digit'
 };
 
-// standard code highlighting across page
+/**
+ * src: https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+ * @param {String} s
+ * @return {String} s with the first character capitalised
+ */
+function firstLetterUpper (s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// highlights all pre code elements on the page using highlight.js
 function highlightAllCode () {
   document.querySelectorAll('pre code').forEach((el) => {
     hljs.highlightElement(el);
   });
 }
 
-// highlighting live code preview field
+// gets elements from page related to code preview area language selection, input and live formatted preview
+const codePreviewLangSelect = document.getElementById('languageSelect');
 const codeInputArea = document.getElementById('newCardCodeInput');
 const codePreviewArea = document.getElementById('codeInputPreview');
-const codePreviewLangSelect = document.getElementById('languageSelect');
 
+// Updates the code preview area's class name and text content from input
+// then highlights using highlight.js and language specified in select menu
 function updateCodeInputArea () {
-  let selectedLang = codePreviewLangSelect.value;
-  if (!selectedLang) { // if default "" value selected
+  let selectedLang = codePreviewLangSelect.value; // gets value of currently selected language
+  if (!selectedLang) { // if default "" value selected, just set language as plaintext
     selectedLang = 'plaintext';
   }
   codePreviewArea.className = `code-text language-${selectedLang} p-2 rounded-3`;
@@ -40,14 +52,25 @@ function updateCodeInputArea () {
   hljs.highlightElement(codePreviewArea);
 }
 
-codeInputArea.addEventListener('input', updateCodeInputArea);
-codePreviewLangSelect.addEventListener('change', updateCodeInputArea);
-
+// Resets the code preview area to it's default values: language as plaintext and content of print('Hello World')
 function resetFormCodePreview () {
   codePreviewArea.className = 'code-text language-plaintext p-2 rounded-3';
   codePreviewArea.innerHTML = "print('Hello World')";
   hljs.highlightElement(codePreviewArea);
 }
+
+codeInputArea.addEventListener('input', updateCodeInputArea); // update contents of preview area and highlighting when new text is input
+
+// adds all available languages (where highlighting is supported) to select dropdown
+hljs.listLanguages().forEach((langName) => {
+  const opt = document.createElement('option');
+  opt.value = langName; // store value as langName directly from hljs to use to update class name (see updateCodeInputArea())
+  opt.innerHTML = firstLetterUpper(langName);
+  codePreviewLangSelect.appendChild(opt); // add new newly generated option to selection menu
+});
+codePreviewLangSelect.addEventListener('change', updateCodeInputArea); // update highlighting when the language selected is changed
+
+resetFormCodePreview(); // set preview to default state on page load
 
 async function postFormDataToUrlAsJSON (endpoint, formDataObj) {
   const fetchOptions = {
@@ -96,7 +119,7 @@ async function newCardFormSubmitListener (event) {
       form.reset(); // clear form values and reset code preview
       resetFormCodePreview();
       linkWarningPopover.dispose();
-      updateCards();
+      updatePageCards();
     }
   } catch (e) {
     const alertDiv = document.getElementById('formErrorAlert');
@@ -108,8 +131,6 @@ async function newCardFormSubmitListener (event) {
     submitButton.innerHTML = 'Submit!';
   }
 }
-
-document.getElementById('newCardForm').addEventListener('submit', newCardFormSubmitListener);
 
 async function newCommentFormSubmitListener (event) {
   event.preventDefault();
@@ -129,7 +150,7 @@ async function newCommentFormSubmitListener (event) {
 
     const commentDisplayedCount = document.getElementById(`card-${parentId}-commentCount`);
     commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/;\d+/, `;${apiResponseJSON.newTotalComments}`);
-    updateComments(parentId);
+    updateCommentsByCard(parentId);
     form.reset();
   } catch (e) {
     const alertDiv = document.getElementById(`commentAlert${parentId}`);
@@ -142,29 +163,16 @@ async function newCommentFormSubmitListener (event) {
   }
 }
 
-/**
- * @param {string} string
- */
-function firstLetterUpper (string) {
-  // src: https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-const langSelect = document.getElementById('languageSelect');
-hljs.listLanguages().forEach((langName) => {
-  const opt = document.createElement('option');
-  const capLangName = firstLetterUpper(langName);
-  opt.value = langName;
-  opt.innerHTML = capLangName;
-
-  langSelect.appendChild(opt);
-});
+// add the submit listener to the new card form
+document.getElementById('newCardForm').addEventListener('submit', newCardFormSubmitListener);
 
 const documentCards = document.getElementById('cards');
 const documentCardModals = document.getElementById('cardModals');
 const sortSelector = document.getElementById('sortingOption');
 
+// These caches are used to save cards/comments from last successful GET to be served in case of server disconnect
 let cardArrayCache = [];
+const commentCache = {};
 
 async function getAllCards (sortBy) {
   documentCards.className = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4';
@@ -244,7 +252,7 @@ function insertCardsOnPage (cardArray) {
 
     documentCards.querySelectorAll('button').forEach((el) => {
       el.addEventListener('click', () => {
-        updateComments(el.getAttribute('data-bs-target').match(/\d+/)[0]);
+        updateCommentsByCard(el.getAttribute('data-bs-target').match(/\d+/)[0]);
       });
     });
   } else {
@@ -253,20 +261,18 @@ function insertCardsOnPage (cardArray) {
   }
 }
 
-function getAllCardsCallback (cardArray) {
-  insertCardsOnPage(cardArray);
-  highlightAllCode();
-  resetFormCodePreview();
-  document.querySelectorAll('.comment-form').forEach(el => el.addEventListener('submit', newCommentFormSubmitListener));
+function updatePageCards () {
+  getAllCards(sortSelector.value).then((cardArray) => {
+    insertCardsOnPage(cardArray);
+    highlightAllCode();
+    document.querySelectorAll('.comment-form').forEach(el => el.addEventListener('submit', newCommentFormSubmitListener));
+  });
 }
 
-function updateCards () {
-  getAllCards(sortSelector.value).then((cardArray) => getAllCardsCallback(cardArray));
-}
+sortSelector.addEventListener('change', updatePageCards);
+updatePageCards();
 
-const commentCache = Object();
-
-async function getComments (cardId) {
+async function getCommentsByCard (cardId) {
   const alertDiv = document.getElementById(`commentAlert${cardId}`);
   alertDiv.innerHTML = '';
 
@@ -291,7 +297,7 @@ async function getComments (cardId) {
   return commentCache[cardId];
 }
 
-function updateComments (cardId) {
+function updateCommentsByCard (cardId) {
   const commentsULEl = document.getElementById(`card-${cardId}-CommentsList`);
   commentsULEl.innerHTML = `<div class="d-flex justify-content-center">
   <div class="spinner-border" role="status">
@@ -299,7 +305,7 @@ function updateComments (cardId) {
   </div>
 </div>`;
 
-  getComments(cardId).then((commentArray) => {
+  getCommentsByCard(cardId).then((commentArray) => {
     commentsULEl.innerHTML = '';
     if (commentArray.length > 0) {
       for (const comment of commentArray) {
@@ -318,7 +324,7 @@ function updateComments (cardId) {
         commentsULEl.innerHTML += makeSingleCommentLiElement(comment.id, comment.content, comment.time.toRelative(), timeDetailString);
       }
       commentsULEl.querySelectorAll('a').forEach((el) => {
-        el.addEventListener('click', () => editCommentAction(el), { once: true });
+        el.addEventListener('click', () => editCommentListener(el), { once: true });
       });
     } else {
       commentsULEl.innerHTML += makeSingleCommentLiElement(null, 'No comments yet!', null);
@@ -326,10 +332,25 @@ function updateComments (cardId) {
   });
 }
 
-sortSelector.addEventListener('change', updateCards);
-updateCards();
+async function putComment (commentId, newContent) {
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({ content: newContent })
+  };
 
-function editCommentAction (linkEl) {
+  try {
+    await fetch(`comments/${commentId}`, fetchOptions);
+    return 'OK';
+  } catch (e) {
+    return 'FAIL';
+  }
+}
+
+function editCommentListener (linkEl) {
   const commentId = linkEl.id.match(/\d+/)[0];
   const cardId = linkEl.closest('ul').id.match(/\d+/)[0];
   const contentDiv = linkEl.closest('.list-group-item').querySelector('.comment-content');
@@ -355,28 +376,10 @@ function editCommentAction (linkEl) {
         );
         contentDiv.textContent = oldContentCache;
       } else {
-        updateComments(cardId);
+        updateCommentsByCard(cardId);
       }
 
-      linkEl.addEventListener('click', () => editCommentAction(linkEl), { once: true });
+      linkEl.addEventListener('click', () => editCommentListener(linkEl), { once: true });
     });
   }, { once: true });
-}
-
-async function putComment (commentId, newContent) {
-  const fetchOptions = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({ content: newContent })
-  };
-
-  try {
-    await fetch(`comments/${commentId}`, fetchOptions);
-    return 'OK';
-  } catch (e) {
-    return 'FAIL';
-  }
 }

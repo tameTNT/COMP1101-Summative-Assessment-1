@@ -1,3 +1,30 @@
+export function makePlaceholderCardBlock () {
+  return `
+<div class="col temp-placeholder-card">
+  <div class="card h-100" tabindex="-1" aria-hidden="true">
+    <div class="card-body">
+      <h5 class="card-title placeholder-glow">
+        <span class="placeholder col-4 rounded-pill"></span>
+      </h5>
+      <h6 class="card-subtitle placeholder-glow mb-2">
+        <span class="placeholder col-8 rounded-pill bg-secondary"></span>
+      </h6>
+      <p class="card-text placeholder-glow">
+        <span class="placeholder col-6 rounded-pill"></span>
+        <span class="placeholder col-4 rounded-pill"></span>
+        <span class="placeholder col-7 rounded-pill"></span>
+      </p>
+      <a href="#" class="btn btn-primary disabled placeholder col-12"></a>
+    </div>
+    <div class="card-footer text-muted placeholder-glow">
+      <span class="placeholder col-3 rounded-pill"></span>
+      <span class="placeholder col-2 rounded-pill"></span>
+      <span class="placeholder col-4 rounded-pill"></span>
+    </div>
+  </div>
+</div>`;
+}
+
 export function makeCardBlock (title, language, code, id, likes, commentCount, relativeTime, exactTime) {
   return `
 <div class="col">
@@ -120,33 +147,6 @@ export function makeSingleCommentLiElement (id, content, relativeTime, timeDetai
   } else {
     return `<li class="list-group-item">${content}</li>`;
   }
-}
-
-export function makePlaceholderCardBlock () {
-  return `
-<div class="col temp-placeholder-card">
-  <div class="card h-100" tabindex="-1" aria-hidden="true">
-    <div class="card-body">
-      <h5 class="card-title placeholder-glow">
-        <span class="placeholder col-4 rounded-pill"></span>
-      </h5>
-      <h6 class="card-subtitle placeholder-glow mb-2">
-        <span class="placeholder col-8 rounded-pill bg-secondary"></span>
-      </h6>
-      <p class="card-text placeholder-glow">
-        <span class="placeholder col-6 rounded-pill"></span>
-        <span class="placeholder col-4 rounded-pill"></span>
-        <span class="placeholder col-7 rounded-pill"></span>
-      </p>
-      <a href="#" class="btn btn-primary disabled placeholder col-12"></a>
-    </div>
-    <div class="card-footer text-muted placeholder-glow">
-      <span class="placeholder col-3 rounded-pill"></span>
-      <span class="placeholder col-2 rounded-pill"></span>
-      <span class="placeholder col-4 rounded-pill"></span>
-    </div>
-  </div>
-</div>`;
 }
 
 export function makeAlert (strong, body) {
