@@ -1,4 +1,4 @@
-/* Rules for sizing Google icons */
+/* Rules for sizing Google icons from icon font */
 .material-icons.md-18 {
   font-size: 18px;
 }
@@ -15,6 +15,7 @@
   font-size: 48px;
 }
 
+/* Rules for controlling code field height and white space handling */
 .comment-scroll {
   overflow: auto;
   max-height: 200px;
@@ -31,14 +32,6 @@
   max-height: 150px;
 }
 
-.like-button {
-  letter-spacing: -3px;
-}
-
-.reddit-info-row {
-  white-space: nowrap;
-}
-
 #newCardCodeInput {
   height: 100px;
   white-space: pre;
@@ -48,6 +41,16 @@
   white-space: pre;
 }
 
+/* Rules for controlling spacing and style on some elements */
+.like-button {
+  letter-spacing: -3px;
+}
+
+.reddit-info-row {
+  white-space: nowrap;
+}
+
+/* Rule for persistent floating action button adapted from https://codepen.io/androidcss/pen/yOopGp */
 .float-button {
   position: fixed;
   width: 80px;

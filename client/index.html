@@ -29,15 +29,16 @@
           integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
           crossorigin="anonymous" defer></script>
 
-  <!--  Luxon for timedate handling-->
+  <!--  Luxon for timedate handling -->
   <script src="https://cdn.jsdelivr.net/npm/luxon@2.2.0/build/global/luxon.min.js"
           integrity="sha256-xqS3EQeErZ6JG7Y//jjn1LB1pxI7ZzK8hVOtpND9BSA="
           crossorigin="anonymous"></script>
 
-  <!-- Own sources inc. favicon, JS and CSS -->
+  <!-- Own sources inc. favicon, js and css -->
   <link rel="icon" type="image/x-icon" href="favicon.png">
-  <script src="./index.js" type="module"></script>
   <link href="index.css" rel="stylesheet">
+  <!-- scripts loaded as type module are automatically deferred so no defer attribute needed -->
+  <script src="./index.js" type="module"></script>
 </head>
 
 <body class="p-3">
@@ -67,6 +68,7 @@
   <main>
     <div id="pageErrorAlert"></div>
 
+    <!--  These cards and cardModals divs are populated dynamically via js -->
     <div id="cards"></div>
 
     <div id="cardModals"></div>
@@ -76,6 +78,7 @@
       <span class="material-icons md-36">post_add</span>
     </a>
 
+    <!--  New Card Form Modal -->
     <div class="modal fade" id="newCardModal" tabindex="-1" aria-label="Form to submit a new card"
          aria-hidden="true">
       <div
@@ -148,6 +151,5 @@
       </div>
     </div>
   </main>
-
 </body>
 </html>
