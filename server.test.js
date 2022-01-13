@@ -1,3 +1,4 @@
+// todo: update node and npm on Surface and comment in README on needing these up to date in order to run .at() function
 const fs = require('fs');
 
 const request = require('supertest');
@@ -168,7 +169,7 @@ describe('Test POST & PUT methods', () => {
       expect(jsonResponse.id).toBe(3);
 
       const dbData = getDbData();
-      expect(jsonResponse.newTotalComments).toBe(dbData.cards.at(1).comments.length);
+      expect(jsonResponse.newTotalComments).toBe(dbData.cards[1].comments.length);
       expect(dbData.comments.at(-1).content).toBe('Test Content');
     });
 
@@ -203,7 +204,18 @@ describe('Test POST & PUT methods', () => {
       const response = await request(app).put('/comments/1').send(putBody);
       expect(response.status).toBe(204);
 
-      expect(getDbData().comments.at(1).content).toBe('New Content!');
+      expect(getDbData().comments[1].content).toBe('New Content!');
+    });
+
+    test('PUT /comments/10 returns status 404', async () => {
+      const putBody = {
+        content: 'New Content!'
+      };
+      const response = await request(app).put('/comments/10').send(putBody);
+      expect(response.status).toBe(404);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('comment(s)-not-found');
     });
 
     test('PUT /comments/1 with invalid put body returns status 400', async () => {
