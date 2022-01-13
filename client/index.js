@@ -20,7 +20,7 @@ const TIMESTRINGFORMAT = { // format to use for short time string hover text
 };
 
 /**
- * src: https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+ * [src] function taken from https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
  * @param {String} s
  * @return {String} s with the first character capitalised
  */
@@ -72,6 +72,12 @@ codePreviewLangSelect.addEventListener('change', updateCodeInputArea); // update
 
 resetFormCodePreview(); // set preview to default state on page load
 
+// [src] some of the following form POSTing code is adapted from https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
+
+/**
+ * @param {String} endpoint API endpoint to use when POSTing (e.g. 'cards')
+ * @param {Object} formDataObj Object created from entries of a FormData object's entries
+ */
 async function postFormDataToUrlAsJSON (endpoint, formDataObj) {
   const fetchOptions = {
     method: 'POST',

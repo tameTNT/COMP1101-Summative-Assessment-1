@@ -50,7 +50,7 @@
   white-space: nowrap;
 }
 
-/* Rule for persistent floating action button adapted from https://codepen.io/androidcss/pen/yOopGp */
+/* [src] rule for persistent floating action button adapted from https://codepen.io/androidcss/pen/yOopGp */
 .float-button {
   position: fixed;
   width: 80px;
