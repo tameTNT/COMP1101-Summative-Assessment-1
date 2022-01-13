@@ -93,8 +93,8 @@ app.route('/cards(/:id(\\d+))?') // e.g. GET /cards; /cards/1; /cards/2; /cards?
 
         const newCard = req.body;
         // check that the request body provided is actually valid and contains all the expected and required properties
-        if (!helpers.isRequestBodyValid(newCard, ['title', 'language', 'code', 'redditUrl'], res)) {
-          return;
+        if (!helpers.requestBodyIsValid(newCard, ['title', 'language', 'code', 'redditUrl'], res)) {
+          return; // abort processing of entity if body invalid
         }
 
         // initialise property values
@@ -210,10 +210,19 @@ app.route('/comments(/:id(\\d+))?') // e.g. GET /comments; /comments/1; /comment
         const fileJsonData = JSON.parse(fileData);
 
         const newComment = req.body;
-        if (!helpers.isRequestBodyValid(newComment, ['content', 'parent'], res)) {
+        if (!helpers.requestBodyIsValid(newComment, ['content', 'parent'], res)) {
           return;
         }
 
+        newComment.parent = Math.trunc(Number(newComment.parent)); // we only want an integer so trunc
+        if (isNaN(newComment.parent)) { // makes sure the parent id provided is actually a number
+          res.status(422);
+          res.json({
+            error: 'invalid-type-of-parent',
+            message: 'The parent property should be a Number or string that can be converted to a Number'
+          });
+          return; // abort processing of this entity
+        }
         newComment.id = helpers.getNewId(fileJsonData.comments);
         newComment.time = DateTime.now().toUTC();
         newComment.lastEdited = null; // lastEdited property initially set to null to be updated later
@@ -274,7 +283,7 @@ app.route('/comments(/:id(\\d+))?') // e.g. GET /comments; /comments/1; /comment
           });
         } else {
           const newContent = req.body.content;
-          if (!helpers.isRequestBodyValid(req.body, ['content'], res)) {
+          if (!helpers.requestBodyIsValid(req.body, ['content'], res)) {
             return;
           }
 

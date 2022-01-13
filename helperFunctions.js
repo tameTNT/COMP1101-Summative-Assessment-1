@@ -83,10 +83,10 @@ module.exports.getNewId = function (currentArray) {
 /**
  * @param {Object} reqBody JS Object returned from req.body
  * @param {String[]} propertiesArray Array of property names reqBody should possess
- * @param {express.Response} response express Response object to set status on and return json to client through
+ * @param {Response} response express Response object to set status on and return json to client through
  * @returns Boolean true if reqBody has all the properties specified in propertiesArray; else, false
  */
-module.exports.isRequestBodyValid = function (reqBody, propertiesArray, response) {
+module.exports.requestBodyIsValid = function (reqBody, propertiesArray, response) {
   for (const prop of propertiesArray) {
     if (!Object.prototype.hasOwnProperty.call(reqBody, prop)) {
       response.status(400); // 400 Bad Request

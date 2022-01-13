@@ -173,7 +173,7 @@ describe('Test POST & PUT methods', () => {
       expect(dbData.comments.at(-1).content).toBe('Test Content');
     });
 
-    test('POST /comments with invalid post body returns status 400', async () => {
+    test('POST /comments with invalid post body properties returns status 400', async () => {
       const postBody = {
         randomField: 'This is clearly missing required fields'
       };
@@ -185,7 +185,19 @@ describe('Test POST & PUT methods', () => {
       expect(jsonResponse.message).toMatch(/(?=.*content)(?=.*parent)/);
     });
 
-    test('POST /comments returns status 404 with non-existent parent id', async () => {
+    test('POST /comments with invalid type of parent property returns status 422', async () => {
+      const postBody = {
+        content: 'Test Content',
+        parent: 'Not a Number'
+      };
+      const response = await request(app).post('/comments').send(postBody);
+      expect(response.status).toBe(422);
+
+      const jsonResponse = JSON.parse(response.text);
+      expect(jsonResponse.error).toBe('invalid-type-of-parent');
+    });
+
+    test('POST /comments with non-existent parent id returns status 404', async () => {
       const postBody = {
         content: 'Test Content',
         parent: 10
