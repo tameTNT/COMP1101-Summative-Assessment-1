@@ -52,7 +52,7 @@ function updateCodeInputArea () {
   hljs.highlightElement(codePreviewArea);
 }
 
-// Resets the code preview area to it's default values: language as plaintext and content of print('Hello World')
+// resets the code preview area to it's default values: language as plaintext and content of print('Hello World')
 function resetFormCodePreview () {
   codePreviewArea.className = 'code-text language-plaintext p-2 rounded-3';
   codePreviewArea.innerHTML = "print('Hello World')";
@@ -77,6 +77,7 @@ resetFormCodePreview(); // set preview to default state on page load
 /**
  * @param {String} endpoint API endpoint to use when POSTing (e.g. 'cards')
  * @param {Object} formDataObj Object created from entries of a FormData object's entries
+ * @return {Promise<Response>} Promise of response from POST request to API using endpoint and formDataObj (as JSON body) provided
  */
 async function postFormDataToUrlAsJSON (endpoint, formDataObj) {
   const fetchOptions = {
@@ -91,8 +92,11 @@ async function postFormDataToUrlAsJSON (endpoint, formDataObj) {
   return await fetch(endpoint, fetchOptions);
 }
 
+// listener to attach to newCardForm submit event - handles submitting the form including:
+// communicating with the api, resetting the form element, updating the page, etc.
 async function newCardFormSubmitListener (event) {
   event.preventDefault();
+  // add loading spinner to button to show user that submission is ongoing
   const submitButton = document.getElementById('newCardSubmit');
   submitButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
@@ -104,62 +108,74 @@ async function newCardFormSubmitListener (event) {
     const apiResponse = await postFormDataToUrlAsJSON('cards', formDataObj);
     const apiResJSON = await apiResponse.json();
 
+    // pre-emptively create the bootstrap popover to display should the reddit url provided by the user have failed
     const linkFormField = document.getElementById('newCardRedditUrl');
+    // bootstrap is loaded in index.html
     // eslint-disable-next-line no-undef
     const linkWarningPopover = new bootstrap.Popover(linkFormField, {
       title: 'Reddit Link Failed',
       content: apiResJSON.message + ' e.g. https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/hpfhlkk/',
-      trigger: 'focus'
+      trigger: 'focus' // the popover is shown when linkFormField is focused by the user
     });
 
     if (!apiResponse.ok) {
-      switch (apiResJSON.error) {
-        case 'reddit-link-failed':
-          linkWarningPopover.show();
+      if (apiResJSON.error === 'reddit-link-failed') {
+        linkWarningPopover.show(); // show the popover if the reddit link failed to validate
       }
     } else {
       // Who knows why this doesn't work - pulled my hair out tyring to get it do so...
       // const newCardModal = new bootstrap.Modal(document.getElementById('newCardModal'));
       // newCardModal.hide();
+      // I suppose we'll just manually click the close button instead via js
       document.getElementById('newCardFormModalCloseButton').click();
-      form.reset(); // clear form values and reset code preview
+
+      // clear form's values and reset code preview
+      form.reset();
       resetFormCodePreview();
-      linkWarningPopover.dispose();
-      updatePageCards();
+      linkWarningPopover.dispose(); // delete the popover element - we don't need it cluttering the DOM
+      updatePageCards(); // update the page's cards so the user can see their new card!
     }
-  } catch (e) {
+  } catch (e) { // catches any CONNECTION REFUSED (i.e. server disconnect) errors and informs user via a Bootstrap Alert element
     const alertDiv = document.getElementById('formErrorAlert');
     alertDiv.innerHTML = makeAlert(
       'Card creation failed!',
       'You might have lost connection to the server.'
     );
-  } finally {
+  } finally { // in any case, reset the button's text to remove the loading spinner since the action has now completed
     submitButton.innerHTML = 'Submit!';
   }
 }
 
+// listener to attach to each comment form's submit event - handles submitting these form including:
+// communicating with the api, resetting the form element, updating the comments section of the card, etc.
 async function newCommentFormSubmitListener (event) {
   event.preventDefault();
   const form = event.currentTarget;
 
-  const parentId = Number(form.id.match(/\d+/g)[0]);
-  const postButton = document.getElementById(`commentPostButton-${parentId}`);
+  const parentCardId = Number(form.id.match(/\d+/g)[0]); // retrieve the id of the card the comment is associated with from the form's id attribute
+  // add loading spinner to relevant submit button to show user that submission is ongoing
+  const postButton = document.getElementById(`commentPostButton-${parentCardId}`);
   postButton.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
   const formData = new FormData(form);
+  /** @type {{[prop: String]: String | Number}} formDataObj */
   const formDataObj = Object.fromEntries(formData.entries());
-  formDataObj.parent = parentId;
+  formDataObj.parent = parentCardId; // add in the parent property - needed for the POST request's body
 
   try {
     const apiResponse = await postFormDataToUrlAsJSON('comments', formDataObj);
     const apiResponseJSON = await apiResponse.json();
 
-    const commentDisplayedCount = document.getElementById(`card-${parentId}-commentCount`);
+    // gets comment count element from card on main page (the element with the forum speech bubbles and a number indicating comment count)
+    const commentDisplayedCount = document.getElementById(`card-${parentCardId}-commentCount`);
+    // replace digits after nbsp's semi-colon with new comment total
     commentDisplayedCount.innerHTML = commentDisplayedCount.innerHTML.replace(/;\d+/, `;${apiResponseJSON.newTotalComments}`);
-    updateCommentsByCard(parentId);
+
+    // if POSTing was successful reload the comments shown on the current card reset the form
+    updateCommentsByCard(parentCardId);
     form.reset();
-  } catch (e) {
-    const alertDiv = document.getElementById(`commentAlert${parentId}`);
+  } catch (e) { // catches any CONNECTION REFUSED (i.e. server disconnect) errors and informs user via a Bootstrap Alert element underneath comment form
+    const alertDiv = document.getElementById(`commentAlert${parentCardId}`);
     alertDiv.innerHTML = makeAlert(
       'Comment post failed!',
       'You might have lost connection to the server.'
@@ -176,7 +192,7 @@ const documentCards = document.getElementById('cards');
 const documentCardModals = document.getElementById('cardModals');
 const sortSelector = document.getElementById('sortingOption');
 
-// These caches are used to save cards/comments from last successful GET to be served in case of server disconnect
+// these caches are used to save cards/comments from last successful GET to be served in case of server disconnect
 let cardArrayCache = [];
 const commentCache = {};
 
