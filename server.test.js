@@ -60,8 +60,10 @@ const testEndpointArrayLength = async function (endpoint, expLength) {
 // with some leeway offered for numerical values (±10)
 const testEndpointsSameResponse = async function (endpointA, endpointB) {
   const responseA = await request(app).get(`/${endpointA}`);
+  expect(responseA.headers['content-type']).toMatch(/json/);
   const resByQuery = JSON.parse(responseA.text);
   const responseB = await request(app).get(`/${endpointB}`);
+  expect(responseA.headers['content-type']).toMatch(/json/);
   const resByParam = JSON.parse(responseB.text);
   // These requests invoke getRedditData() on the server side, so Reddit JSON data is fetched
   // The data Reddit returns can actually change between the two requests
