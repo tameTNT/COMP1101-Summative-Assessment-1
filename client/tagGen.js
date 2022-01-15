@@ -116,7 +116,7 @@ export function makeCardModalBlock (id, title, language, code, redditLink, rUpvo
 }
 
 export function makeSingleCommentLiElement (id, content, relativeTime, timeDetailString) {
-  if (relativeTime) {
+  if (relativeTime) { // no relativeTime string would mean this is to make a dud comment (i.e. to signal no comments)
     let baseString = `
 <li class="list-group-item">
   <div class="d-flex">
@@ -127,24 +127,21 @@ export function makeSingleCommentLiElement (id, content, relativeTime, timeDetai
       <a href="#" id="editComment-${id}" title="Edit comment">
         <span class="material-icons md-18 align-middle link-secondary">edit</span>
       </a>
-    </div>`;
+    </div>
+    <div class="text-muted ms-1" title="${timeDetailString}">
+      ${relativeTime}`;
 
+    // if the pre-constructed timeDetailString uses 'Edited', then use the * character to signal editing
     if (timeDetailString.includes('Edited')) {
-      baseString += `
-    <div class="text-muted ms-1" title="${timeDetailString}">
-      ${relativeTime} *
-    </div>`;
-    } else {
-      baseString += `
-    <div class="text-muted ms-1" title="${timeDetailString}">
-      ${relativeTime}
-    </div>`;
+      baseString += ' *';
     }
 
+    // closing <div>s and <li> included in any case
     return baseString + `
+    </div>
   </div>
 </li>`;
-  } else {
+  } else { // just use dud content provided and nothing else
     return `<li class="list-group-item">${content}</li>`;
   }
 }
