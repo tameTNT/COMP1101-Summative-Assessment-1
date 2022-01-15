@@ -18,12 +18,12 @@
 /* Rules for controlling code field height and white space handling */
 .comment-scroll {
   overflow: auto;
-  max-height: 200px;
+  min-height: 50px;
 }
 
 .code-text {
   font-family: 'Roboto Mono', monospace;
-  max-height: 300px;
+  max-height: 250px;
   overflow: auto;
 }
 

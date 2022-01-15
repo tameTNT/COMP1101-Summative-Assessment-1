@@ -64,8 +64,10 @@ export function makeCardModalBlock (id, title, language, code, redditLink, rUpvo
         <button type="button" class="btn-close" data-bs-dismiss="modal"
                 aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <pre><code class="language-${language.toLowerCase()} code-text rounded-3">${code}</code></pre>
+      <div class="modal-body d-flex flex-column">
+        <div class="flex-grow-0">
+          <pre><code class="language-${language.toLowerCase()} code-text rounded-3">${code}</code></pre>
+        </div>
         <div class="container mt-2 mb-2 ms-0">
           <div class="row align-items-center">
             <div class="col-sm-auto">
@@ -106,9 +108,7 @@ export function makeCardModalBlock (id, title, language, code, redditLink, rUpvo
           </div>
           <div id="commentAlert${id}"></div>
         </form>
-        <ul class="list-group list-group-flush comment-scroll" id="card-${id}-CommentsList">
-          <!-- todo: shorten comments via JS adapting to device width -->
-        </ul>
+        <ul class="list-group list-group-flush comment-scroll flex-grow-1" id="card-${id}-CommentsList"></ul>
       </div>
     </div>
   </div>
