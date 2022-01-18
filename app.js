@@ -115,8 +115,8 @@ app.route('/cards(/:id(\\d+))?') // e.g. GET /cards; /cards/1; /cards/2; /cards?
         if (!redditData) { // redditData does not exist (e.g. is undefined) - either because no regExpMatch or getRedditData(...) returned undefined
           res.status(422); // 422 Unprocessable Entity
           res.json({
-            error: 'reddit-link-failed',
-            message: "The provided Reddit link couldn't be resolved. Please check the link is correct."
+            error: 'reddit-url-failed',
+            message: "The provided Reddit URL couldn't be resolved. Please check the URL is correct."
           });
         } else {
           // add the newly retrieved (and now confirmed valid) Reddit data to the card object and push this card to the cards array

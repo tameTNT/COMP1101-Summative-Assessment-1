@@ -91,8 +91,8 @@ module.exports.requestBodyIsValid = function (reqBody, propertiesArray, response
     if (!Object.prototype.hasOwnProperty.call(reqBody, prop)) {
       response.status(400); // 400 Bad Request
       response.json({
-        error: 'request-body-field-error',
-        message: `The request body did not include the expected fields of ${propertiesArray.join(', ')}`
+        error: 'request-body-field-missing',
+        message: `The request body did not include all the expected fields of ${propertiesArray.join(', ')}`
       });
       return false; // return false to abort the processing of this request
     }

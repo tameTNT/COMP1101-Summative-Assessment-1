@@ -13,7 +13,7 @@
         4
       ],
       "redditData": {
-        "score": 12,
+        "score": 15,
         "author": "4HbQ",
         "replies": 1
       }
@@ -30,7 +30,8 @@
         0,
         2,
         5,
-        6
+        6,
+        7
       ],
       "redditData": {
         "score": 91,
@@ -53,6 +54,21 @@
         "score": 17,
         "author": "frankbsad",
         "replies": 2
+      }
+    },
+    {
+      "title": "Ew - who still uses PHP?",
+      "language": "php",
+      "code": "function children($x) {return $x == 3;}\nfunction cats($x) {return $x > 7;}\nfunction samoyeds($x) {return $x == 2;}\nfunction pomeranians($x) {return $x < 3;}\nfunction akitas($x) {return $x == 0;}\nfunction vizslas($x) {return $x == 0;}\nfunction goldfish($x) {return $x < 5;}\nfunction trees($x) {return $x > 4;}\nfunction cars($x) {return $x == 2;}\nfunction perfumes($x) {return $x == 1;}\n\nforeach (file('input.txt') as $line => $str) {\n\tpreg_match_all('#(\\w+): (\\d+)#', $str, $matches, PREG_SET_ORDER);\n\t\n\tif (count($matches) == array_sum(array_map(function ($x) {return $x[1]($x[2]);}, $matches)))\n\t\techo $line + 1;\n}",
+      "redditUrl": "https://www.reddit.com/r/adventofcode/comments/3x1i26/comment/cy0r1gk",
+      "id": 3,
+      "likes": 0,
+      "time": "2022-01-15T21:17:33.018Z",
+      "comments": [],
+      "redditData": {
+        "score": 5,
+        "author": "WhoSoup",
+        "replies": 1
       }
     }
   ],
@@ -105,6 +121,13 @@
       "id": 6,
       "time": "2022-01-15T17:11:05.488Z",
       "lastEdited": "2022-01-15T17:15:55.735Z"
+    },
+    {
+      "content": "New Comment! Let's edit that!",
+      "parent": 1,
+      "id": 7,
+      "time": "2022-01-15T21:16:01.578Z",
+      "lastEdited": "2022-01-15T21:16:10.204Z"
     }
   ]
 }

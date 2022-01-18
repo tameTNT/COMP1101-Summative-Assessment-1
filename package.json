@@ -1,6 +1,6 @@
 {
   "name": "luca_huelle_prog_black_summative_1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Programming (Black) Summative Assessment Project - a dynamic single-page app using Bootstrap and JS",
   "main": "index.js",
   "scripts": {
