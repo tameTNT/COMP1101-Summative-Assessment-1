@@ -53,7 +53,8 @@ string `[src]` is used in code.
 #### API Documentation
 
 The documentation of the API developed for the project (with source code in `app.js`) can be found
-at ...TODO: insert URL here...
+at https://documenter.getpostman.com/view/17830357/UVXnGETR (alternatively, an internet shortcut is
+included in the project directory). The documentation was produced using Postman.
 
 ### Important notes on testing!
 
