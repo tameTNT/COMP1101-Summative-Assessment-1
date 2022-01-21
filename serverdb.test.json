@@ -1,9 +1,9 @@
 {
   "cards": [
     {
-      "title": "Title 1",
-      "language": "Language 1",
-      "code": "Code sample 1",
+      "title": "Title 0",
+      "language": "Language 0",
+      "code": "Code sample 0",
       "redditUrl": "https://www.reddit.com/r/adventofcode/comments/rf7onx/comment/hocl0cq",
       "id": 0,
       "likes": 1,

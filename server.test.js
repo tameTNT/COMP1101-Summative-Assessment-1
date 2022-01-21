@@ -140,7 +140,7 @@ describe('Test POST & PUT methods', () => {
       expect(response.status).toBe(400); // 400 Bad Request
 
       const jsonResponse = JSON.parse(response.text);
-      expect(jsonResponse.error).toBe('request-body-field-error');
+      expect(jsonResponse.error).toBe('request-body-field-missing');
       // response message should include these four property names since they were all missing from the POST body
       expect(jsonResponse.message).toMatch(/(?=.*title)(?=.*language)(?=.*code)(?=.*redditUrl)/);
     });
@@ -155,7 +155,7 @@ describe('Test POST & PUT methods', () => {
       const response = await request(app).post('/cards').send(postBody);
       expect(response.status).toBe(422); // 422 Unprocessable Entity
       const jsonResponse = JSON.parse(response.text);
-      expect(jsonResponse.error).toBe('reddit-link-failed');
+      expect(jsonResponse.error).toBe('reddit-url-failed');
     });
 
     test('POST /cards with Reddit link invalid by non-existence returns status 422', async () => {
@@ -168,7 +168,7 @@ describe('Test POST & PUT methods', () => {
       const response = await request(app).post('/cards').send(postBody);
       expect(response.status).toBe(422);
       const jsonResponse = JSON.parse(response.text);
-      expect(jsonResponse.error).toBe('reddit-link-failed');
+      expect(jsonResponse.error).toBe('reddit-url-failed');
     });
   });
 
@@ -200,7 +200,7 @@ describe('Test POST & PUT methods', () => {
       expect(response.status).toBe(400);
 
       const jsonResponse = JSON.parse(response.text);
-      expect(jsonResponse.error).toBe('request-body-field-error');
+      expect(jsonResponse.error).toBe('request-body-field-missing');
       expect(jsonResponse.message).toMatch(/(?=.*content)(?=.*parent)/);
     });
 
@@ -259,7 +259,7 @@ describe('Test POST & PUT methods', () => {
       expect(response.status).toBe(400);
 
       const jsonResponse = JSON.parse(response.text);
-      expect(jsonResponse.error).toBe('request-body-field-error');
+      expect(jsonResponse.error).toBe('request-body-field-missing');
       expect(jsonResponse.message).toMatch(/content/);
     });
 
