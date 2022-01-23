@@ -120,7 +120,7 @@ async function newCardFormSubmitListener (event) {
     });
 
     if (!apiResponse.ok) {
-      if (apiResJSON.error === 'reddit-link-failed') {
+      if (apiResJSON.error === 'reddit-url-failed') {
         linkWarningPopover.show(); // show the popover if the reddit link failed to validate
       }
     } else {

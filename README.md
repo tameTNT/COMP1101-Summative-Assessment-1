@@ -49,12 +49,14 @@ string `[src]` is used in code.
   using `Ctrl+C` and then entering `y`.
 - Test the styling of files using `npm run pretest`
 - Test the api using JEST with `npm test`
+- To run the server in a development environment using `nodemon`, use `npm run run`
 
 #### API Documentation
 
 The documentation of the API developed for the project (with source code in `app.js`) can be found
-at https://documenter.getpostman.com/view/17830357/UVXnGETR (alternatively, an internet shortcut is
-included in the project directory). The documentation was produced using Postman.
+[online at getpostman.com](https://documenter.getpostman.com/view/17830357/UVXnGETR) (
+alternatively, an internet shortcut is included in the project directory). The documentation was
+produced using Postman.
 
 ### Important notes on testing!
 
