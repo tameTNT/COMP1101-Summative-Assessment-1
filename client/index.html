@@ -123,13 +123,13 @@
                 <div id="codeInputPreview" class="" tabindex="0"></div>
               </div>
 
-              <div class="form-floating m-3">
+              <div class="form-floating m-3"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                   title="Paste the URL from the <b>'Share'</b> button on a Reddit <i>comment</i> here;
+                   e.g. https://www.reddit.com/r/adventofcode/comments/r66vow/comment/hmrrmwr/?utm_source=share&utm_medium=web2x&context=3">
                 <input class="form-control" type="text" id="newCardRedditUrl"
                        pattern="https://www.reddit.com/r/adventofcode/comments/(\w+)/comment/(\w+)(/(\?.*)?)?"
                        name="redditUrl" placeholder="redditUrl" tabindex="0"
-                       data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                       title="Paste the URL from the <b>'Share'</b> button on a Reddit <i>comment</i> here;
-                       e.g. https://www.reddit.com/r/adventofcode/comments/r66vow/comment/hmrrmwr/?utm_source=share&utm_medium=web2x&context=3"
                        required>
                 <label for="newCardRedditUrl">Reddit <i>Comment</i> Share URL</label>
               </div>
