@@ -1,6 +1,6 @@
 {
   "name": "luca_huelle_prog_black_summative_1",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Luca Huelle - Programming (Black) [COMP 1101] - Summative Assessment 1 - A dynamic single-page app using Bootstrap and JS: Interactive forum of 'Advent of Code' code",
   "main": "index.js",
   "scripts": {

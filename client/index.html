@@ -127,6 +127,9 @@
                 <input class="form-control" type="text" id="newCardRedditUrl"
                        pattern="https://www.reddit.com/r/adventofcode/comments/(\w+)/comment/(\w+)(/(\?.*)?)?"
                        name="redditUrl" placeholder="redditUrl" tabindex="0"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                       title="Paste the URL from the <b>'Share'</b> button on a Reddit <i>comment</i> here;
+                       e.g. https://www.reddit.com/r/adventofcode/comments/r66vow/comment/hmrrmwr/?utm_source=share&utm_medium=web2x&context=3"
                        required>
                 <label for="newCardRedditUrl">Reddit <i>Comment</i> Share URL</label>
               </div>
@@ -135,7 +138,7 @@
                 <span class="material-icons md-24 align-middle text-secondary">open_in_new</span>
                 <a class="link-secondary align-middle" target="_blank"
                    href="https://www.reddit.com/r/adventofcode/wiki/solution_megathreads">
-                  Reddit AoC 'Megathread' master page
+                  /r/adventofcode 'Megathread's Master Page
                 </a>
               </div>
             </form>

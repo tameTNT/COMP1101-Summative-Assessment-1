@@ -29,6 +29,13 @@ function firstLetterUpper (s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// activate Bootstrap tooltips on the page
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipTriggerEl) => {
+  // bootstrap is loaded in index.html and since this script is deferred it *will* exist when this method is called, eslint
+  // eslint-disable-next-line no-undef
+  return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
 // highlights all pre code elements on the page using highlight.js
 function highlightAllCode () {
   document.querySelectorAll('pre code').forEach((el) => {
@@ -111,7 +118,6 @@ async function newCardFormSubmitListener (event) {
 
     // pre-emptively create the bootstrap popover to display should the reddit url provided by the user have failed
     const linkFormField = document.getElementById('newCardRedditUrl');
-    // bootstrap is loaded in index.html
     // eslint-disable-next-line no-undef
     const linkWarningPopover = new bootstrap.Popover(linkFormField, {
       title: 'Reddit Link Failed',
