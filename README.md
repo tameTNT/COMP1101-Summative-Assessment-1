@@ -1,8 +1,39 @@
-# Luca Huelle - COMP1101 Programming (Black) Summative Assessment 1
+# Luca Huelle - Programming (Black) \[COMP1101\] - Summative Assessment 1
 
 _December 2021 - January 2022_
 
-## Before you start!
+## _Key points in this README_
+
+- [About the included video](#notes-on-the-accompanying-functionality-demonstration-video)
+- [⚠ IMPORTANT - Before you run any code!](#before-you-run-any-code)
+- [Setup and installation](#setup-and-running)
+- [Where is the API Documentation?](#api-documentation)
+- [⚠ IMPORTANT - Why are some JEST tests failing with `Received: 500`?](#important-notes-on-testing)
+
+## Notes on the accompanying functionality demonstration video
+
+**Virtually all** API endpoints are covered, at least indirectly (i.e. **shown in the network log**
+displayed at all times), at some point in the video. The only omissions are as follows:
+
+- `GET /comments` (with no query parameters)
+- `GET /cards?ids=...`
+- `GET /comments/:id`
+
+This is simply because their 'mirroring endpoint' is shown with identical functionality (merely
+operating on a different entity). In the same order again, the equivalent endpoints which _are_
+demonstrated at some point in the video are:
+
+- `GET /cards` (with no query parameters)
+- `GET /comments?ids=...`
+- `GET /cards/:id`
+
+Note that all endpoints have been written to be more rigorous than just accepting data from the web
+app. That is, there are errors and status codes, such as `400 Bad Request`, not shown in the video
+which are still implemented.
+
+However, **all** client side Javascript and HTML/Bootstrap code _is_ demonstrated in some way.
+
+## Before you run any code!
 
 Before running any tests and/or code, please run both `node --version` and `npm --version` and
 confirm you are using at least
@@ -18,24 +49,23 @@ I wasn't able to take part in the [Advent of Code](https://adventofcode.com/) th
 too busy with this project 😂. So this is a one-page website that lets users share interesting
 comments and solutions to the daily problems from the subreddit which can otherwise easily be missed
 amongst all the activity on each day. Users can highlight new comments and their associated code
-snippets in 'cards' which other users can then comment on.
+snippets in 'cards' which other users can then comment on. Comments can be edited.
 
 ## Setup and running
 
 ### Installation
 
 To perform a basic installation of the project (**_without_** any `JEST` testing or `eslint`
-capacity)
-, simply run `npm install --production=true` in this directory. This will install the dependencies
-listed in `package.json` automatically.
+capacity), simply run `npm install --production=true` in this directory. This will install the
+dependencies listed in `package.json` automatically.
 
-Should you wish to be able to run tests and other associated dev commands (e.g. `npm test`
-, `npm run pretest`), use just `npm install` without the production flag. .
+Should you wish to be able to run tests and other associated dev commands (e.g. `npm test`,
+`npm run pretest`), use just `npm install` without the `production` flag.
 
 ### What's included and running the code
 
 This project includes all the **client side code** (in the `\client` folder which includes
-local `html`, `css` and `js` files) as well as **server-side code** for the api (in `app.js`
+local `html`, `css` and `js` files) as well as **server-side code** for the API (in `app.js`
 and `helperFunctions.js`). It also includes some additional files for repo management (
 e.g. `.eslintrc.js`, `.gitignore`) and testing (`serverdb.json` and `serverdb.test.json`)
 
@@ -48,14 +78,14 @@ string `[src]` is used in code.
   port [port 8000](http://localhost:8000/). Visit this url to view the site. Terminate this server
   using `Ctrl+C` and then entering `y`.
 - Test the styling of files using `npm run pretest`
-- Test the api using JEST with `npm test`
+- Test the API using JEST with `npm test`
 - To run the server in a development environment using `nodemon`, use `npm run run`
 
 #### API Documentation
 
 The documentation of the API developed for the project (with source code in `app.js`) can be found
-[online at getpostman.com](https://documenter.getpostman.com/view/17830357/UVXnGETR) (
-alternatively, an internet shortcut is included in the project directory). The documentation was
+[online at getpostman.com](https://documenter.getpostman.com/view/17830357/UVXnGETR)
+(alternatively, an internet shortcut is included in the project directory). The documentation was
 produced using Postman.
 
 ### Important notes on testing!
@@ -72,7 +102,7 @@ Expected: 200
 Received: 500
 ```
 
-Where a `500 Internal Server Error` was returned by the api instead of the expected 200. In such a
+Where a `500 Internal Server Error` was returned by the API instead of the expected 200. In such a
 case, **just re-run the tests again**. The same error is unlikely to occur again.
 
 If tests fail with `TypeError: getDbData(...).cards.at is not a function` or similar, your **version
