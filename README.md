@@ -107,3 +107,16 @@ case, **just re-run the tests again**. The same error is unlikely to occur again
 
 If tests fail with `TypeError: getDbData(...).cards.at is not a function` or similar, your **version
 of nodejs is likely out of date** (see above).
+
+## Licenses
+
+- `favicon.png` christmas tree emoji © Microsoft
+  ([MS Docs](https://docs.microsoft.com/en-us/typography/fonts/font-faq#document-embedding))
+- Roboto Mono font licensed under the _Apache License, Version 2.0_
+  ([Google Fonts](https://fonts.google.com/specimen/Roboto+Mono?query=roboto#license))
+- highlight.js licensed under the _BSD 3-Clause "New" or "Revised" License_
+  ([GitHub/highlightjs](https://github.com/highlightjs/highlight.js/blob/main/LICENSE))
+- Bootstrap licensed under the _MIT License_
+  ([GitHub/twbs](https://getbootstrap.com/docs/5.1/about/license/))
+- Luxon licensed under the _MIT License_
+  ([GitHub/moment](https://github.com/moment/luxon/blob/master/LICENSE.md))
