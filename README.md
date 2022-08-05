@@ -110,7 +110,7 @@ of nodejs is likely out of date** (see above).
 
 ## Licenses
 
-- `favicon.png` christmas tree emoji © Microsoft
+- `favicon.png` Christmas Tree emoji © Microsoft
   ([MS Docs](https://docs.microsoft.com/en-us/typography/fonts/font-faq#document-embedding))
 - Roboto Mono font licensed under the _Apache License, Version 2.0_
   ([Google Fonts](https://fonts.google.com/specimen/Roboto+Mono?query=roboto#license))
